@@ -7,6 +7,7 @@ from django.core.cache import cache
 from django.utils.safestring import mark_safe
 from django.utils.encoding import smart_unicode
 from django.db import settings
+from django.utils.text import capfirst
 from django.utils.html import escape
 from django.utils.hashcompat import md5_constructor
 from django.contrib.humanize.templatetags.humanize import naturalday
@@ -29,25 +30,9 @@ def profile_link(user):
     return mark_safe(data)
 
 
-@register.tag
-def forum_time(parser, token):
-    try:
-        tag, time = token.split_contents()
-    except ValueError:
-        raise template.TemplateSyntaxError('forum_time requires single argument')
-    else:
-        return ForumTimeNode(time)
-
-
-class ForumTimeNode(template.Node):
-    def __init__(self, time):
-        self.time = template.Variable(time)
-
-    def render(self, context):
-        time = self.time.resolve(context)
-        formated_time = u'%s %s' % (naturalday(time), time.strftime('%H:%M:%S'))
-        formated_time = mark_safe(formated_time)
-        return formated_time
+@register.filter
+def forum_time(time):
+    return u'%s %s' % (capfirst(naturalday(time)), time.strftime('%H:%M:%S'))
 
 
 # TODO: this old code requires refactoring
@@ -133,8 +118,7 @@ def has_unreads(topic, user):
             return False
     else:
         if isinstance(user.posttracking.topics, dict):
-            posttracking =  user.posttracking.topics.get(str(topic.id), -1)
-            if topic.last_post_id > posttracking and posttracking > -1:
+            if topic.last_post_id > user.posttracking.topics.get(str(topic.id), 0):
                 return True
             else:
                 return False
@@ -147,11 +131,8 @@ def forum_unread_link(topic, user):
     """
     if not isinstance(user.posttracking.topics, dict):
         return topic.get_absolute_url()
-    pk = user.posttracking.topics.get(str(topic.id), -1)
-    if pk > -1:
-        return Post.objects.filter(topic=topic).filter(pk__gt=pk).order_by('pk')[0].get_absolute_url()
-    else:
-        return None
+    pk = user.posttracking.topics.get(str(topic.id), 0)
+    return Post.objects.filter(topic=topic).filter(pk__gt=pk).order_by('pk')[0].get_absolute_url()
 
 @register.filter
 def forum_unreads(forum, user):
@@ -166,8 +147,7 @@ def forum_unreads(forum, user):
             if user.posttracking.last_read:
                 topics = topics.filter(updated__gte=user.posttracking.last_read)
             for topic in topics:
-                posttracking =  user.posttracking.topics.get(str(topic.id), -1)
-                if topic.last_post_id > posttracking and posttracking > -1:
+                if topic.last_post_id > user.posttracking.topics.get(str(topic.id), 0):
                     return True
         return False
 
