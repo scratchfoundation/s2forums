@@ -232,6 +232,7 @@ def set_language(request, language):
 
 def convert_text_to_html(text, markup):
     if markup == 'bbcode':
+        text = re.sub(r'(?!\[\/?(b|i|u|s|link|url|quote|wiki|google|dictionary|dict|img|list|\*|big|small|color|center)(=.+)?])(\[(.*)\])', r'[[b][/b]\4]', text)
         renderbb = customize_postmarkup()
         
         text =  renderbb(text)
