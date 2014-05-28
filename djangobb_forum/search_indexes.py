@@ -1,15 +1,6 @@
 from haystack.indexes import *
 from haystack import site
 
-from gargoyle import gargoyle
-try:
-    if gargoyle.is_active('solr_indexing_enabled'):
-        from celery_haystack.indexes import CelerySearchIndex as SearchIndex
-except:
-    # Allow migrations to run
-    from celery_haystack.indexes import CelerySearchIndex as SearchIndex
-
-
 import djangobb_forum.models as models
 
 class PostIndex(SearchIndex):
