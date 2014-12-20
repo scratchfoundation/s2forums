@@ -1,372 +1,307 @@
-# encoding: utf-8
-import datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 
-class Migration(SchemaMigration):
-
-    def forwards(self, orm):
-        
-        # Adding model 'Category'
-        db.create_table('djangobb_forum_category', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=80)),
-            ('position', self.gf('django.db.models.fields.IntegerField')(default=0, blank=True)),
-        ))
-        db.send_create_signal('djangobb_forum', ['Category'])
-
-        # Adding M2M table for field groups on 'Category'
-        db.create_table('djangobb_forum_category_groups', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('category', models.ForeignKey(orm['djangobb_forum.category'], null=False)),
-            ('group', models.ForeignKey(orm['auth.group'], null=False))
-        ))
-        db.create_unique('djangobb_forum_category_groups', ['category_id', 'group_id'])
-
-        # Adding model 'Forum'
-        db.create_table('djangobb_forum_forum', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('category', self.gf('django.db.models.fields.related.ForeignKey')(related_name='forums', to=orm['djangobb_forum.Category'])),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=80)),
-            ('position', self.gf('django.db.models.fields.IntegerField')(default=0, blank=True)),
-            ('description', self.gf('django.db.models.fields.TextField')(default='', blank=True)),
-            ('updated', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-            ('post_count', self.gf('django.db.models.fields.IntegerField')(default=0, blank=True)),
-            ('topic_count', self.gf('django.db.models.fields.IntegerField')(default=0, blank=True)),
-            ('last_post', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='last_forum_post', null=True, to=orm['djangobb_forum.Post'])),
-        ))
-        db.send_create_signal('djangobb_forum', ['Forum'])
-
-        # Adding M2M table for field moderators on 'Forum'
-        db.create_table('djangobb_forum_forum_moderators', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('forum', models.ForeignKey(orm['djangobb_forum.forum'], null=False)),
-            ('user', models.ForeignKey(orm['auth.user'], null=False))
-        ))
-        db.create_unique('djangobb_forum_forum_moderators', ['forum_id', 'user_id'])
-
-        # Adding model 'Topic'
-        db.create_table('djangobb_forum_topic', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('forum', self.gf('django.db.models.fields.related.ForeignKey')(related_name='topics', to=orm['djangobb_forum.Forum'])),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=255)),
-            ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('updated', self.gf('django.db.models.fields.DateTimeField')(null=True)),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
-            ('views', self.gf('django.db.models.fields.IntegerField')(default=0, blank=True)),
-            ('sticky', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('closed', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('post_count', self.gf('django.db.models.fields.IntegerField')(default=0, blank=True)),
-            ('last_post', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='last_topic_post', null=True, to=orm['djangobb_forum.Post'])),
-        ))
-        db.send_create_signal('djangobb_forum', ['Topic'])
-
-        # Adding M2M table for field subscribers on 'Topic'
-        db.create_table('djangobb_forum_topic_subscribers', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('topic', models.ForeignKey(orm['djangobb_forum.topic'], null=False)),
-            ('user', models.ForeignKey(orm['auth.user'], null=False))
-        ))
-        db.create_unique('djangobb_forum_topic_subscribers', ['topic_id', 'user_id'])
-
-        # Adding model 'Post'
-        db.create_table('djangobb_forum_post', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('topic', self.gf('django.db.models.fields.related.ForeignKey')(related_name='posts', to=orm['djangobb_forum.Topic'])),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(related_name='posts', to=orm['auth.User'])),
-            ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('updated', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
-            ('updated_by', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], null=True, blank=True)),
-            ('markup', self.gf('django.db.models.fields.CharField')(default='bbcode', max_length=15)),
-            ('body', self.gf('django.db.models.fields.TextField')()),
-            ('body_html', self.gf('django.db.models.fields.TextField')()),
-            ('user_ip', self.gf('django.db.models.fields.IPAddressField')(max_length=15, null=True, blank=True)),
-        ))
-        db.send_create_signal('djangobb_forum', ['Post'])
-
-        # Adding model 'Reputation'
-        db.create_table('djangobb_forum_reputation', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('from_user', self.gf('django.db.models.fields.related.ForeignKey')(related_name='reputations_from', to=orm['auth.User'])),
-            ('to_user', self.gf('django.db.models.fields.related.ForeignKey')(related_name='reputations_to', to=orm['auth.User'])),
-            ('post', self.gf('django.db.models.fields.related.ForeignKey')(related_name='post', to=orm['djangobb_forum.Post'])),
-            ('time', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('sign', self.gf('django.db.models.fields.IntegerField')(default=0)),
-            ('reason', self.gf('django.db.models.fields.TextField')(max_length=1000)),
-        ))
-        db.send_create_signal('djangobb_forum', ['Reputation'])
-
-        # Adding unique constraint on 'Reputation', fields ['from_user', 'post']
-        db.create_unique('djangobb_forum_reputation', ['from_user_id', 'post_id'])
-
-        # Adding model 'Profile'
-        db.create_table('djangobb_forum_profile', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user', self.gf('djangobb_forum.fields.AutoOneToOneField')(related_name='forum_profile', unique=True, to=orm['auth.User'])),
-            ('status', self.gf('django.db.models.fields.CharField')(max_length=30, blank=True)),
-            ('site', self.gf('django.db.models.fields.URLField')(max_length=200, blank=True)),
-            ('jabber', self.gf('django.db.models.fields.CharField')(max_length=80, blank=True)),
-            ('icq', self.gf('django.db.models.fields.CharField')(max_length=12, blank=True)),
-            ('msn', self.gf('django.db.models.fields.CharField')(max_length=80, blank=True)),
-            ('aim', self.gf('django.db.models.fields.CharField')(max_length=80, blank=True)),
-            ('yahoo', self.gf('django.db.models.fields.CharField')(max_length=80, blank=True)),
-            ('location', self.gf('django.db.models.fields.CharField')(max_length=30, blank=True)),
-            ('signature', self.gf('django.db.models.fields.TextField')(default='', max_length=1024, blank=True)),
-            ('time_zone', self.gf('django.db.models.fields.FloatField')(default=3.0)),
-            ('language', self.gf('django.db.models.fields.CharField')(default='', max_length=5)),
-            ('avatar', self.gf('djangobb_forum.fields.ExtendedImageField')(default='', max_length=100, blank=True)),
-            ('theme', self.gf('django.db.models.fields.CharField')(default='default', max_length=80)),
-            ('show_avatar', self.gf('django.db.models.fields.BooleanField')(default=True)),
-            ('show_signatures', self.gf('django.db.models.fields.BooleanField')(default=True)),
-            ('privacy_permission', self.gf('django.db.models.fields.IntegerField')(default=1)),
-            ('markup', self.gf('django.db.models.fields.CharField')(default='bbcode', max_length=15)),
-            ('post_count', self.gf('django.db.models.fields.IntegerField')(default=0, blank=True)),
-        ))
-        db.send_create_signal('djangobb_forum', ['Profile'])
-
-        # Adding model 'PostTracking'
-        db.create_table('djangobb_forum_posttracking', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user', self.gf('djangobb_forum.fields.AutoOneToOneField')(to=orm['auth.User'], unique=True)),
-            ('topics', self.gf('djangobb_forum.fields.JSONField')(null=True)),
-            ('last_read', self.gf('django.db.models.fields.DateTimeField')(null=True)),
-        ))
-        db.send_create_signal('djangobb_forum', ['PostTracking'])
-
-        # Adding model 'Report'
-        db.create_table('djangobb_forum_report', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('reported_by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='reported_by', to=orm['auth.User'])),
-            ('post', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['djangobb_forum.Post'])),
-            ('zapped', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('zapped_by', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='zapped_by', null=True, to=orm['auth.User'])),
-            ('created', self.gf('django.db.models.fields.DateTimeField')(blank=True)),
-            ('reason', self.gf('django.db.models.fields.TextField')(default='', max_length='1000', blank=True)),
-        ))
-        db.send_create_signal('djangobb_forum', ['Report'])
-
-        # Adding model 'Ban'
-        db.create_table('djangobb_forum_ban', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user', self.gf('django.db.models.fields.related.OneToOneField')(related_name='ban_users', unique=True, to=orm['auth.User'])),
-            ('ban_start', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
-            ('ban_end', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
-            ('reason', self.gf('django.db.models.fields.TextField')()),
-        ))
-        db.send_create_signal('djangobb_forum', ['Ban'])
-
-        # Adding model 'Attachment'
-        db.create_table('djangobb_forum_attachment', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('post', self.gf('django.db.models.fields.related.ForeignKey')(related_name='attachments', to=orm['djangobb_forum.Post'])),
-            ('size', self.gf('django.db.models.fields.IntegerField')()),
-            ('content_type', self.gf('django.db.models.fields.CharField')(max_length=255)),
-            ('path', self.gf('django.db.models.fields.CharField')(max_length=255)),
-            ('name', self.gf('django.db.models.fields.TextField')()),
-            ('hash', self.gf('django.db.models.fields.CharField')(default='', max_length=40, db_index=True, blank=True)),
-        ))
-        db.send_create_signal('djangobb_forum', ['Attachment'])
+from django.db import models, migrations
+import django_fsm.db.fields.fsmfield
+import djangobb_forum.fields
+import django.utils.timezone
+from django.conf import settings
 
 
-    def backwards(self, orm):
-        
-        # Removing unique constraint on 'Reputation', fields ['from_user', 'post']
-        db.delete_unique('djangobb_forum_reputation', ['from_user_id', 'post_id'])
+class Migration(migrations.Migration):
 
-        # Deleting model 'Category'
-        db.delete_table('djangobb_forum_category')
+    dependencies = [
+        ('auth', '0001_initial'),
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+    ]
 
-        # Removing M2M table for field groups on 'Category'
-        db.delete_table('djangobb_forum_category_groups')
-
-        # Deleting model 'Forum'
-        db.delete_table('djangobb_forum_forum')
-
-        # Removing M2M table for field moderators on 'Forum'
-        db.delete_table('djangobb_forum_forum_moderators')
-
-        # Deleting model 'Topic'
-        db.delete_table('djangobb_forum_topic')
-
-        # Removing M2M table for field subscribers on 'Topic'
-        db.delete_table('djangobb_forum_topic_subscribers')
-
-        # Deleting model 'Post'
-        db.delete_table('djangobb_forum_post')
-
-        # Deleting model 'Reputation'
-        db.delete_table('djangobb_forum_reputation')
-
-        # Deleting model 'Profile'
-        db.delete_table('djangobb_forum_profile')
-
-        # Deleting model 'PostTracking'
-        db.delete_table('djangobb_forum_posttracking')
-
-        # Deleting model 'Report'
-        db.delete_table('djangobb_forum_report')
-
-        # Deleting model 'Ban'
-        db.delete_table('djangobb_forum_ban')
-
-        # Deleting model 'Attachment'
-        db.delete_table('djangobb_forum_attachment')
-
-
-    models = {
-        'auth.group': {
-            'Meta': {'object_name': 'Group'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '80'}),
-            'permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'})
-        },
-        'auth.permission': {
-            'Meta': {'ordering': "('content_type__app_label', 'content_type__model', 'codename')", 'unique_together': "(('content_type', 'codename'),)", 'object_name': 'Permission'},
-            'codename': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
-        },
-        'auth.user': {
-            'Meta': {'object_name': 'User'},
-            'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
-            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Group']", 'symmetrical': 'False', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
-            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
-            'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
-        },
-        'contenttypes.contenttype': {
-            'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
-            'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        'djangobb_forum.attachment': {
-            'Meta': {'object_name': 'Attachment'},
-            'content_type': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'hash': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '40', 'db_index': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.TextField', [], {}),
-            'path': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'post': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'attachments'", 'to': "orm['djangobb_forum.Post']"}),
-            'size': ('django.db.models.fields.IntegerField', [], {})
-        },
-        'djangobb_forum.ban': {
-            'Meta': {'object_name': 'Ban'},
-            'ban_end': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'ban_start': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'reason': ('django.db.models.fields.TextField', [], {}),
-            'user': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'ban_users'", 'unique': 'True', 'to': "orm['auth.User']"})
-        },
-        'djangobb_forum.category': {
-            'Meta': {'ordering': "['position']", 'object_name': 'Category'},
-            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['auth.Group']", 'null': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '80'}),
-            'position': ('django.db.models.fields.IntegerField', [], {'default': '0', 'blank': 'True'})
-        },
-        'djangobb_forum.forum': {
-            'Meta': {'ordering': "['position']", 'object_name': 'Forum'},
-            'category': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'forums'", 'to': "orm['djangobb_forum.Category']"}),
-            'description': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'last_post': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'last_forum_post'", 'null': 'True', 'to': "orm['djangobb_forum.Post']"}),
-            'moderators': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['auth.User']", 'null': 'True', 'blank': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '80'}),
-            'position': ('django.db.models.fields.IntegerField', [], {'default': '0', 'blank': 'True'}),
-            'post_count': ('django.db.models.fields.IntegerField', [], {'default': '0', 'blank': 'True'}),
-            'topic_count': ('django.db.models.fields.IntegerField', [], {'default': '0', 'blank': 'True'}),
-            'updated': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'})
-        },
-        'djangobb_forum.post': {
-            'Meta': {'ordering': "['created']", 'object_name': 'Post'},
-            'body': ('django.db.models.fields.TextField', [], {}),
-            'body_html': ('django.db.models.fields.TextField', [], {}),
-            'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'markup': ('django.db.models.fields.CharField', [], {'default': "'bbcode'", 'max_length': '15'}),
-            'topic': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'posts'", 'to': "orm['djangobb_forum.Topic']"}),
-            'updated': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'updated_by': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'null': 'True', 'blank': 'True'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'posts'", 'to': "orm['auth.User']"}),
-            'user_ip': ('django.db.models.fields.IPAddressField', [], {'max_length': '15', 'null': 'True', 'blank': 'True'})
-        },
-        'djangobb_forum.posttracking': {
-            'Meta': {'object_name': 'PostTracking'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'last_read': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
-            'topics': ('djangobb_forum.fields.JSONField', [], {'null': 'True'}),
-            'user': ('djangobb_forum.fields.AutoOneToOneField', [], {'to': "orm['auth.User']", 'unique': 'True'})
-        },
-        'djangobb_forum.profile': {
-            'Meta': {'object_name': 'Profile'},
-            'aim': ('django.db.models.fields.CharField', [], {'max_length': '80', 'blank': 'True'}),
-            'avatar': ('djangobb_forum.fields.ExtendedImageField', [], {'default': "''", 'max_length': '100', 'blank': 'True'}),
-            'icq': ('django.db.models.fields.CharField', [], {'max_length': '12', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'jabber': ('django.db.models.fields.CharField', [], {'max_length': '80', 'blank': 'True'}),
-            'language': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '5'}),
-            'location': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'markup': ('django.db.models.fields.CharField', [], {'default': "'bbcode'", 'max_length': '15'}),
-            'msn': ('django.db.models.fields.CharField', [], {'max_length': '80', 'blank': 'True'}),
-            'post_count': ('django.db.models.fields.IntegerField', [], {'default': '0', 'blank': 'True'}),
-            'privacy_permission': ('django.db.models.fields.IntegerField', [], {'default': '1'}),
-            'show_avatar': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'show_signatures': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'signature': ('django.db.models.fields.TextField', [], {'default': "''", 'max_length': '1024', 'blank': 'True'}),
-            'site': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'}),
-            'status': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'theme': ('django.db.models.fields.CharField', [], {'default': "'default'", 'max_length': '80'}),
-            'time_zone': ('django.db.models.fields.FloatField', [], {'default': '3.0'}),
-            'user': ('djangobb_forum.fields.AutoOneToOneField', [], {'related_name': "'forum_profile'", 'unique': 'True', 'to': "orm['auth.User']"}),
-            'yahoo': ('django.db.models.fields.CharField', [], {'max_length': '80', 'blank': 'True'})
-        },
-        'djangobb_forum.report': {
-            'Meta': {'object_name': 'Report'},
-            'created': ('django.db.models.fields.DateTimeField', [], {'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'post': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['djangobb_forum.Post']"}),
-            'reason': ('django.db.models.fields.TextField', [], {'default': "''", 'max_length': "'1000'", 'blank': 'True'}),
-            'reported_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'reported_by'", 'to': "orm['auth.User']"}),
-            'zapped': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'zapped_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'zapped_by'", 'null': 'True', 'to': "orm['auth.User']"})
-        },
-        'djangobb_forum.reputation': {
-            'Meta': {'unique_together': "(('from_user', 'post'),)", 'object_name': 'Reputation'},
-            'from_user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'reputations_from'", 'to': "orm['auth.User']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'post': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'post'", 'to': "orm['djangobb_forum.Post']"}),
-            'reason': ('django.db.models.fields.TextField', [], {'max_length': '1000'}),
-            'sign': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'time': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'to_user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'reputations_to'", 'to': "orm['auth.User']"})
-        },
-        'djangobb_forum.topic': {
-            'Meta': {'ordering': "['-updated']", 'object_name': 'Topic'},
-            'closed': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'forum': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'topics'", 'to': "orm['djangobb_forum.Forum']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'last_post': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'last_topic_post'", 'null': 'True', 'to': "orm['djangobb_forum.Post']"}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'post_count': ('django.db.models.fields.IntegerField', [], {'default': '0', 'blank': 'True'}),
-            'sticky': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'subscribers': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'subscriptions'", 'blank': 'True', 'to': "orm['auth.User']"}),
-            'updated': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"}),
-            'views': ('django.db.models.fields.IntegerField', [], {'default': '0', 'blank': 'True'})
-        }
-    }
-
-    complete_apps = ['djangobb_forum']
+    operations = [
+        migrations.CreateModel(
+            name='Attachment',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('size', models.IntegerField(verbose_name='Size')),
+                ('content_type', models.CharField(max_length=255, verbose_name='Content type')),
+                ('path', models.CharField(max_length=255, verbose_name='Path')),
+                ('name', models.TextField(verbose_name='Name')),
+                ('hash', models.CharField(default=b'', max_length=40, verbose_name='Hash', db_index=True, blank=True)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Ban',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('ban_start', models.DateTimeField(default=django.utils.timezone.now, verbose_name='Ban start')),
+                ('ban_end', models.DateTimeField(null=True, verbose_name='Ban end', blank=True)),
+                ('reason', models.TextField(verbose_name='Reason')),
+                ('user', models.OneToOneField(related_name=b'ban_users', verbose_name='Banned user', to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+                'verbose_name': 'Ban',
+                'verbose_name_plural': 'Bans',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Category',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=80, verbose_name='Name')),
+                ('position', models.IntegerField(default=0, verbose_name='Position', blank=True)),
+                ('groups', models.ManyToManyField(help_text='Only users from these groups can see this category', to='auth.Group', null=True, verbose_name='Groups', blank=True)),
+            ],
+            options={
+                'ordering': ['position'],
+                'verbose_name': 'Category',
+                'verbose_name_plural': 'Categories',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Forum',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('moderator_only', models.BooleanField(default=False, verbose_name='New topics by moderators only')),
+                ('name', models.CharField(max_length=80, verbose_name='Name')),
+                ('position', models.IntegerField(default=0, verbose_name='Position', blank=True)),
+                ('description', models.TextField(default=b'', verbose_name='Description', blank=True)),
+                ('updated', models.DateTimeField(auto_now=True, verbose_name='Updated')),
+                ('post_count', models.IntegerField(default=0, verbose_name='Post count', blank=True)),
+                ('topic_count', models.IntegerField(default=0, verbose_name='Topic count', blank=True)),
+                ('category', models.ForeignKey(related_name=b'forums', verbose_name='Category', to='djangobb_forum.Category')),
+            ],
+            options={
+                'ordering': ['position'],
+                'verbose_name': 'Forum',
+                'verbose_name_plural': 'Forums',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Poll',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('question', models.CharField(max_length=200)),
+                ('choice_count', models.PositiveSmallIntegerField(default=1, help_text='How many choices are allowed simultaneously.')),
+                ('active', models.BooleanField(default=True, help_text='Can users vote to this poll or just see the result?')),
+                ('deactivate_date', models.DateTimeField(help_text='Point of time after this poll would be automatic deactivated', null=True, blank=True)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='PollChoice',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('choice', models.CharField(max_length=200)),
+                ('votes', models.IntegerField(default=0, editable=False)),
+                ('poll', models.ForeignKey(related_name=b'choices', to='djangobb_forum.Poll')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Post',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created', models.DateTimeField(auto_now_add=True, verbose_name='Created')),
+                ('updated', models.DateTimeField(null=True, verbose_name='Updated', blank=True)),
+                ('markup', models.CharField(default=b'bbcode', max_length=15, verbose_name='Markup', choices=[(b'bbcode', b'bbcode')])),
+                ('body', models.TextField(verbose_name='Message')),
+                ('body_html', models.TextField(verbose_name='HTML version')),
+                ('user_ip', models.IPAddressField(null=True, verbose_name='User IP', blank=True)),
+            ],
+            options={
+                'ordering': ['created'],
+                'get_latest_by': 'created',
+                'verbose_name': 'Post',
+                'verbose_name_plural': 'Posts',
+                'permissions': (('fast_post', 'Can add posts without a time limit'), ('med_post', 'Can add posts at medium speed'), ('post_external_links', 'Can post external links'), ('delayed_delete', 'Can delete posts after a delay')),
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='PostStatus',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('state', django_fsm.db.fields.fsmfield.FSMField(default=b'unreviewed', max_length=50, db_index=True)),
+                ('user_agent', models.CharField(max_length=200, null=True, blank=True)),
+                ('referrer', models.CharField(max_length=200, null=True, blank=True)),
+                ('permalink', models.CharField(max_length=200, null=True, blank=True)),
+                ('forum', models.ForeignKey(to='djangobb_forum.Forum')),
+                ('post', models.OneToOneField(to='djangobb_forum.Post')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='PostTracking',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('topics', djangobb_forum.fields.JSONField(null=True, blank=True)),
+                ('last_read', models.DateTimeField(null=True, blank=True)),
+                ('user', djangobb_forum.fields.AutoOneToOneField(to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+                'verbose_name': 'Post tracking',
+                'verbose_name_plural': 'Post tracking',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Profile',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('status', models.CharField(max_length=30, verbose_name='Status', blank=True)),
+                ('site', models.URLField(verbose_name='Site', blank=True)),
+                ('jabber', models.CharField(max_length=80, verbose_name='Jabber', blank=True)),
+                ('icq', models.CharField(max_length=12, verbose_name='ICQ', blank=True)),
+                ('msn', models.CharField(max_length=80, verbose_name='MSN', blank=True)),
+                ('aim', models.CharField(max_length=80, verbose_name='AIM', blank=True)),
+                ('yahoo', models.CharField(max_length=80, verbose_name='Yahoo', blank=True)),
+                ('location', models.CharField(max_length=30, verbose_name='Location', blank=True)),
+                ('signature', models.TextField(default=b'', max_length=2000, verbose_name='Signature', blank=True)),
+                ('signature_html', models.TextField(default=b'', max_length=2000, verbose_name='Signature', blank=True)),
+                ('time_zone', models.FloatField(default=0.0, verbose_name='Time zone', choices=[(-12.0, b'-12'), (-11.0, b'-11'), (-10.0, b'-10'), (-9.5, b'-09.5'), (-9.0, b'-09'), (-8.5, b'-08.5'), (-8.0, b'-08 PST'), (-7.0, b'-07 MST'), (-6.0, b'-06 CST'), (-5.0, b'-05 EST'), (-4.0, b'-04 AST'), (-3.5, b'-03.5'), (-3.0, b'-03 ADT'), (-2.0, b'-02'), (-1.0, b'-01'), (0.0, b'00 GMT'), (1.0, b'+01 CET'), (2.0, b'+02'), (3.0, b'+03'), (3.5, b'+03.5'), (4.0, b'+04'), (4.5, b'+04.5'), (5.0, b'+05'), (5.5, b'+05.5'), (6.0, b'+06'), (6.5, b'+06.5'), (7.0, b'+07'), (8.0, b'+08'), (9.0, b'+09'), (9.5, b'+09.5'), (10.0, b'+10'), (10.5, b'+10.5'), (11.0, b'+11'), (11.5, b'+11.5'), (12.0, b'+12'), (13.0, b'+13'), (14.0, b'+14')])),
+                ('language', models.CharField(default=b'', max_length=5, verbose_name='Language', choices=[(b'en', b'English'), (b'an', b'Aragon\xc3\xa9s'), (b'ast', b'Asturianu'), (b'id', b'Bahasa Indonesia'), (b'ms', b'Bahasa Melayu'), (b'ca', b'Catal\xc3\xa0'), (b'cs', b'\xc4\x8cesky'), (b'cy', b'Cymraeg'), (b'da', b'Dansk'), (b'fa-af', b'Dari'), (b'de', b'Deutsch'), (b'et', b'Eesti'), (b'eo', b'Esperanto'), (b'es', b'Espa\xc3\xb1ol'), (b'eu', b'Euskara'), (b'fr', b'Fran\xc3\xa7ais'), (b'fr-ca', b'Fran\xc3\xa7ais (Canada)'), (b'ga', b'Gaeilge'), (b'gl', b'Galego'), (b'hr', b'Hrvatski'), (b'is', b'\xc3\x8dslenska'), (b'it', b'Italiano'), (b'rw', b'Kinyarwanda'), (b'ku', b'Kurd\xc3\xae'), (b'la', b'Latina'), (b'lv', b'Latvie\xc5\xa1u'), (b'lt', b'Lietuvi\xc5\xb3'), (b'hu', b'Magyar'), (b'mt', b'Malti'), (b'cat', b'Meow'), (b'nl', b'Nederlands'), (b'nb', b'Norsk Bokm\xc3\xa5l'), (b'pl', b'Polski'), (b'pt', b'Portugu\xc3\xaas'), (b'pt-br', b'Portugu\xc3\xaas Brasileiro'), (b'ro', b'Rom\xc3\xa2n\xc4\x83'), (b'sc', b'Sardu'), (b'sk', b'Sloven\xc4\x8dina'), (b'sl', b'Sloven\xc5\xa1\xc4\x8dina'), (b'fi', b'suomi'), (b'sv', b'Svenska'), (b'nai', b'Tepehuan'), (b'vi', b'Ti\xe1\xba\xbfng Vi\xe1\xbb\x87t'), (b'tr', b'T\xc3\xbcrk\xc3\xa7e'), (b'ab', b'\xd0\x90\xd2\xa7\xd1\x81\xd1\x88\xd3\x99\xd0\xb0'), (b'ar', b'\xd8\xa7\xd9\x84\xd8\xb9\xd8\xb1\xd8\xa8\xd9\x8a\xd8\xa9'), (b'bg', b'\xd0\x91\xd1\x8a\xd0\xbb\xd0\xb3\xd0\xb0\xd1\x80\xd1\x81\xd0\xba\xd0\xb8'), (b'el', b'\xce\x95\xce\xbb\xce\xbb\xce\xb7\xce\xbd\xce\xb9\xce\xba\xce\xac'), (b'fa', b'\xd9\x81\xd8\xa7\xd8\xb1\xd8\xb3\xdb\x8c'), (b'he', b'\xd7\xa2\xd6\xb4\xd7\x91\xd6\xb0\xd7\xa8\xd6\xb4\xd7\x99\xd7\xaa'), (b'hi', b'\xe0\xa4\xb9\xe0\xa4\xbf\xe0\xa4\xa8\xe0\xa5\x8d\xe0\xa4\xa6\xe0\xa5\x80'), (b'hy', b'\xd5\x80\xd5\xa1\xd5\xb5\xd5\xa5\xd6\x80\xd5\xa5\xd5\xb6'), (b'ja', b'\xe6\x97\xa5\xe6\x9c\xac\xe8\xaa\x9e'), (b'ja-hr', b'\xe3\x81\xab\xe3\x81\xbb\xe3\x82\x93\xe3\x81\x94'), (b'km', b'\xe1\x9e\x9f\xe1\x9f\x86\xe1\x9e\x9b\xe1\x9f\x80\xe1\x9e\x80\xe1\x9e\x94\xe1\x9f\x86\xe1\x9e\x96\xe1\x9e\xb6\xe1\x9e\x80'), (b'kn', b'\xe0\xb2\xad\xe0\xb2\xbe\xe0\xb2\xb7\xe0\xb3\x86-\xe0\xb2\xb9\xe0\xb3\x86\xe0\xb2\xb8\xe0\xb2\xb0\xe0\xb3\x81'), (b'ko', b'\xed\x95\x9c\xea\xb5\xad\xec\x96\xb4'), (b'mk', b'\xd0\x9c\xd0\xb0\xd0\xba\xd0\xb5\xd0\xb4\xd0\xbe\xd0\xbd\xd1\x81\xd0\xba\xd0\xb8'), (b'ml', b'\xe0\xb4\xae\xe0\xb4\xb2\xe0\xb4\xaf\xe0\xb4\xbe\xe0\xb4\xb3\xe0\xb4\x82'), (b'mn', b'\xd0\x9c\xd0\xbe\xd0\xbd\xd0\xb3\xd0\xbe\xd0\xbb \xd1\x85\xd1\x8d\xd0\xbb'), (b'mr', b'\xe0\xa4\xae\xe0\xa4\xb0\xe0\xa4\xbe\xe0\xa4\xa0\xe0\xa5\x80'), (b'my', b'\xe1\x80\x99\xe1\x80\xbc\xe1\x80\x94\xe1\x80\xba\xe1\x80\x99\xe1\x80\xac\xe1\x80\x98\xe1\x80\xac\xe1\x80\x9e\xe1\x80\xac'), (b'ru', b'\xd0\xa0\xd1\x83\xd1\x81\xd1\x81\xd0\xba\xd0\xb8\xd0\xb9'), (b'sr', b'\xd0\xa1\xd1\x80\xd0\xbf\xd1\x81\xd0\xba\xd0\xb8'), (b'th', b'\xe0\xb9\x84\xe0\xb8\x97\xe0\xb8\xa2'), (b'uk', b'\xd0\xa3\xd0\xba\xd1\x80\xd0\xb0\xd1\x97\xd0\xbd\xd1\x81\xd1\x8c\xd0\xba\xd0\xb0'), (b'zh-cn', b'\xe7\xae\x80\xe4\xbd\x93\xe4\xb8\xad\xe6\x96\x87'), (b'zh-tw', b'\xe6\xad\xa3\xe9\xab\x94\xe4\xb8\xad\xe6\x96\x87')])),
+                ('avatar', djangobb_forum.fields.ExtendedImageField(default=b'', upload_to=b'djangobb_forum/avatars', verbose_name='Avatar', blank=True)),
+                ('theme', models.CharField(default=b'default', max_length=80, verbose_name='Theme')),
+                ('show_avatar', models.BooleanField(default=True, verbose_name='Show avatar')),
+                ('show_signatures', models.BooleanField(default=True, verbose_name='Show signatures')),
+                ('show_smilies', models.BooleanField(default=True, verbose_name='Show smilies')),
+                ('privacy_permission', models.IntegerField(default=1, verbose_name='Privacy permission', choices=[(0, 'Display your e-mail address.'), (1, 'Hide your e-mail address but allow form e-mail.'), (2, 'Hide your e-mail address and disallow form e-mail.')])),
+                ('auto_subscribe', models.BooleanField(default=False, help_text='Auto subscribe all topics you have created or reply.', verbose_name='Auto subscribe')),
+                ('markup', models.CharField(default=b'bbcode', max_length=15, verbose_name='Default markup', choices=[(b'bbcode', b'bbcode')])),
+                ('post_count', models.IntegerField(default=0, verbose_name='Post count', blank=True)),
+                ('user', djangobb_forum.fields.AutoOneToOneField(related_name=b'forum_profile', verbose_name='User', to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+                'verbose_name': 'Profile',
+                'verbose_name_plural': 'Profiles',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Report',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('zapped', models.BooleanField(default=False, verbose_name='Zapped')),
+                ('created', models.DateTimeField(verbose_name='Created', blank=True)),
+                ('reason', models.TextField(default=b'', max_length=b'1000', verbose_name='Reason', blank=True)),
+                ('post', models.ForeignKey(verbose_name='Post', to='djangobb_forum.Post')),
+                ('reported_by', models.ForeignKey(related_name=b'reported_by', verbose_name='Reported by', to=settings.AUTH_USER_MODEL)),
+                ('zapped_by', models.ForeignKey(related_name=b'zapped_by', verbose_name='Zapped by', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+            ],
+            options={
+                'verbose_name': 'Report',
+                'verbose_name_plural': 'Reports',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Reputation',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('time', models.DateTimeField(auto_now_add=True, verbose_name='Time')),
+                ('sign', models.IntegerField(default=0, verbose_name='Sign', choices=[(1, b'PLUS'), (-1, b'MINUS')])),
+                ('reason', models.TextField(max_length=1000, verbose_name='Reason')),
+                ('from_user', models.ForeignKey(related_name=b'reputations_from', verbose_name='From', to=settings.AUTH_USER_MODEL)),
+                ('post', models.ForeignKey(related_name=b'post', verbose_name='Post', to='djangobb_forum.Post')),
+                ('to_user', models.ForeignKey(related_name=b'reputations_to', verbose_name='To', to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+                'verbose_name': 'Reputation',
+                'verbose_name_plural': 'Reputations',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Topic',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=255, verbose_name='Subject')),
+                ('created', models.DateTimeField(auto_now_add=True, verbose_name='Created')),
+                ('updated', models.DateTimeField(null=True, verbose_name='Updated')),
+                ('views', models.IntegerField(default=0, verbose_name='Views count', blank=True)),
+                ('sticky', models.BooleanField(default=False, verbose_name='Sticky')),
+                ('closed', models.BooleanField(default=False, verbose_name='Closed')),
+                ('post_count', models.IntegerField(default=0, verbose_name='Post count', blank=True)),
+                ('forum', models.ForeignKey(related_name=b'topics', verbose_name='Forum', to='djangobb_forum.Forum')),
+                ('last_post', models.ForeignKey(related_name=b'last_topic_post', blank=True, to='djangobb_forum.Post', null=True)),
+                ('subscribers', models.ManyToManyField(related_name=b'subscriptions', verbose_name='Subscribers', to=settings.AUTH_USER_MODEL, blank=True)),
+                ('user', models.ForeignKey(verbose_name='User', to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+                'ordering': ['-updated'],
+                'get_latest_by': 'updated',
+                'verbose_name': 'Topic',
+                'verbose_name_plural': 'Topics',
+                'permissions': (('delayed_close', 'Can close topics after a delay'),),
+            },
+            bases=(models.Model,),
+        ),
+        migrations.AlterUniqueTogether(
+            name='reputation',
+            unique_together=set([('from_user', 'post')]),
+        ),
+        migrations.AddField(
+            model_name='poststatus',
+            name='topic',
+            field=models.ForeignKey(to='djangobb_forum.Topic'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='post',
+            name='topic',
+            field=models.ForeignKey(related_name=b'posts', verbose_name='Topic', to='djangobb_forum.Topic'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='post',
+            name='updated_by',
+            field=models.ForeignKey(verbose_name='Updated by', blank=True, to=settings.AUTH_USER_MODEL, null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='post',
+            name='user',
+            field=models.ForeignKey(related_name=b'posts', verbose_name='User', to=settings.AUTH_USER_MODEL),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='poll',
+            name='topic',
+            field=models.ForeignKey(to='djangobb_forum.Topic'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='poll',
+            name='users',
+            field=models.ManyToManyField(help_text='Users who has voted this poll.', to=settings.AUTH_USER_MODEL, null=True, blank=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='forum',
+            name='last_post',
+            field=models.ForeignKey(related_name=b'last_forum_post', blank=True, to='djangobb_forum.Post', null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='forum',
+            name='moderators',
+            field=models.ManyToManyField(to=settings.AUTH_USER_MODEL, null=True, verbose_name='Moderators', blank=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='attachment',
+            name='post',
+            field=models.ForeignKey(related_name=b'attachments', verbose_name='Post', to='djangobb_forum.Post'),
+            preserve_default=True,
+        ),
+    ]
