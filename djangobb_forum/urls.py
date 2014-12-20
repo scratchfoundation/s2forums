@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import *
 from django_replicated.decorators import use_slave
 
 from djangobb_forum import settings as forum_settings
