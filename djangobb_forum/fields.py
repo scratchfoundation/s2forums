@@ -2,6 +2,7 @@
 Details about AutoOneToOneField:
     http://softwaremaniacs.org/blog/2007/03/07/auto-one-to-one-field/
 """
+import json
 try:
     from cStringIO import StringIO
 except ImportError:
@@ -14,7 +15,6 @@ from django.db.models.fields.related import SingleRelatedObjectDescriptor
 from django.db import models, IntegrityError
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.serializers.json import DjangoJSONEncoder
-from django.utils import simplejson as json
 from django.conf import settings
 
 import logging

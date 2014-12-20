@@ -1,5 +1,6 @@
 # coding: utf-8
 
+from json import JSONEncoder
 import re
 from HTMLParser import HTMLParser, HTMLParseError
 import postmarkup
@@ -16,8 +17,7 @@ from django.template import RequestContext
 from django.http import HttpResponse, Http404
 from django.core.urlresolvers import reverse
 from django.utils.functional import Promise
-from django.utils.translation import force_unicode, check_for_language
-from django.utils.simplejson import JSONEncoder
+from django.utils.translation import force_text, check_for_language
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
@@ -94,7 +94,7 @@ class LazyJSONEncoder(JSONEncoder):
 
     def default(self, o):
         if isinstance(o, Promise):
-            return force_unicode(o)
+            return force_text(o)
         else:
             return super(LazyJSONEncoder, self).default(o)
 
