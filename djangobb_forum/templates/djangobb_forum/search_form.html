@@ -3,7 +3,7 @@
 {% load i18n %}
 
 {% block page-name %}{% trans "Search" %}{% endblock %}
-{% block mobile %}{% url djangobb:mobile_search %}{% endblock %}
+{% block mobile %}{% url 'djangobb:mobile_search' %}{% endblock %}
 
 {% block js %}
 {{ block.super }}

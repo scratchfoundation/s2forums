@@ -3,10 +3,10 @@
 {% load pagination_tags %}
 {% load forum_extras %}
 
-{% block full-link %}{% url djangobb:search %}{% endblock %}
+{% block full-link %}{% url 'djangobb:search' %}{% endblock %}
 
 {% block title %}
-    <span><a href="{% url djangobb:mobile_index %}">{% trans "Discuss" %}</a></span>
+    <span><a href="{% url 'djangobb:mobile_index' %}">{% trans "Discuss" %}</a></span>
     {% block page-name %}{% trans "Search" %}{% endblock %}
 {% endblock %}
 

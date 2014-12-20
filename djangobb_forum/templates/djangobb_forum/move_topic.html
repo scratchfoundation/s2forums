@@ -7,7 +7,7 @@
 {% block content %}
 <div class="linkst">
     <ul>
-        <li><a href="{% url djangobb:index %}">{% trans "Discussion Forums" %}</a></li>
+        <li><a href="{% url 'djangobb:index' %}">{% trans "Discussion Forums" %}</a></li>
         <li>&raquo; {% trans "Move Topic" %}</li>
     </ul>
 </div>
@@ -17,7 +17,7 @@
         <h4>{% trans "Move Topic" %}</h4>
     </div>
     <div class="box-content">
-        <form method="post" action="{% url djangobb:move_topic %}">
+        <form method="post" action="{% url 'djangobb:move_topic' %}">
             {% csrf_token %}
             {% for topic_id in topic_ids %}
                 <input type="hidden" value="{{ topic_id }}" name="topic_id"/>

@@ -11,7 +11,7 @@
             </div>
             <div class="tclcon">
                 <h3>{% link forum %}
-                  {% if forum_settings.RSS %} <a href="{% url djangobb:forum_forum_feed forum.id %}"><img src="{{ STATIC_URL }}djangobb_forum/img/feed-icon-small.png"  alt="[RSS Feed]" title="[RSS Feed]" class="rss" /></a>
+                  {% if forum_settings.RSS %} <a href="{% url 'djangobb:forum_forum_feed' forum.id %}"><img src="{{ STATIC_URL }}djangobb_forum/img/feed-icon-small.png"  alt="[RSS Feed]" title="[RSS Feed]" class="rss" /></a>
                   {% endif %}
                 </h3>
                 {{ forum.description|safe }}
