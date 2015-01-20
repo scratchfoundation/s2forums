@@ -33,7 +33,7 @@ mySettings = {
 			}, replaceWith:'[img]http://cdn2.scratch.mit.edu/get_image/project/[![Project ID]!]_' + _thumb_width[0] + 'x' + Math.ceil(Number(_thumb_width[0]) * .75) + '.png[/img]'},
 			{name:'Profile Picture', beforeInsert: function(h) {
 				_thumb_width[1] = prompt('Size (px)', 90);
-			}, replaceWith:'[img]http://cdn2.scratch.mit.edu/get_image/user/[![Scratcher ID]!]_' + _thumb_width[1] + 'x' + _thumb_width[1] + '.png[/img]'}, //Using Usernames would be MUCH better for this
+			}, replaceWith:'[img]http://cdn2.scratch.mit.edu/get_image/user/[![Scratcher ID]!]_' + _thumb_width[1] + 'x' + _thumb_width[1] + '.png[/img]'} //Using Usernames would be MUCH better for this
 		], className:'thumbnail-button'},
 		{name:'Link', key:'L', openWith:'[url=[![Url]!]]', closeWith:'[/url]', placeHolder:'Your text to link here...'},
 		{separator:'---------------' },
