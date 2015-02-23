@@ -24,6 +24,8 @@
 	<div class="box-content">
 		<form method="post">
 			{% csrf_token %}
+			<div style="display: none" id="simple-user-agent">My browser / operating system: {{ simple_user_agent|default:'NOT PROVIDED' }}</div>
+
 			{% if post.id == post.topic.head.id %}
 				<label>
 					<strong>{% trans "Subject" %}</strong>
