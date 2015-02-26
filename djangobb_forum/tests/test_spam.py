@@ -113,6 +113,25 @@ class ForumSpamTests(TestCase):
         self.assertEqual(
             self.post_status.post.topic.forum.name, forum_settings.SPAM_FORUM_NAME)
 
+    def test_transition_filter_user_deleted(self):
+        self.post_status = PostStatus.objects.create_for_post(self.test_post)
+        self.post_status.state = PostStatus.FILTERED_HAM
+        self.post_status.save()
+        self.post_status.filter_user_deleted()
+        self.assertEqual(PostStatus.USER_DELETED, self.post_status.state)
+        self.assertEqual(
+            self.post_status.post.topic.forum.name, forum_settings.SPAM_FORUM_NAME)
+
+    def test_transition_filter_user_undeleted(self):
+        self.post_status = PostStatus.objects.create_for_post(self.test_post)
+        self.post_status.state = PostStatus.FILTERED_HAM
+        self.post_status.save()
+        self.post_status.filter_user_deleted()
+        self.post_status.filter_user_undeleted()
+        self.assertEqual(PostStatus.UNREVIEWED, self.post_status.state)
+        self.assertNotEqual(
+            self.post_status.post.topic.forum.name, forum_settings.SPAM_FORUM_NAME)
+
     def test_review_new_posts(self):
         ham_post = Post.objects.create(
             topic=self.test_topic, user=self.user, body="Test ham content",
