@@ -810,7 +810,7 @@ class PostStatus(models.Model):
         pass
 
     @transition(
-        field=state, source=UNREVIEWED, target=USER_DELETED,
+        field=state, source=[UNREVIEWED, FILTERED_HAM, MARKED_HAM], target=USER_DELETED,
         save=True)
     def filter_user_deleted(self):
         """
