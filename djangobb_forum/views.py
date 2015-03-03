@@ -752,6 +752,7 @@ def edit_post(request, post_id):
     return render(request, 'djangobb_forum/edit_post.html', {'form': form,
             'post': post,
             'moderator': moderator,
+            'simple_user_agent': simple_user_agent(request)
             })
 
 
