@@ -155,8 +155,8 @@ specs.forEach(function(spec) {
     if (info.shape === 'hat') output = '\n' + output;
 
     if (spec[1] === 'e') {
-      output = output.replace('end', 'else\n    \nend');
-      preview += '\nelse';
+      output = output.replace('end', language.blocks['else'] + '\n    \nend');
+      preview += '\n' + language.blocks['else'];
     }
 
     preview = preview.replace(/&/g, '&amp;')
