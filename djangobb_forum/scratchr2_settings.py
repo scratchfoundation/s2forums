@@ -1,3 +1,5 @@
+import codecs
+
 #DjangoBB Forum Settings
 # Described here: https://bitbucket.org/slav0nic/djangobb/src/a4c0272533a9/djangobb_forum/settings.py
 DJANGOBB_FORUM_BASE_TITLE = 'Discuss Scratch'
@@ -32,5 +34,9 @@ DJANGOBB_SIGNATURE_MAX_LINES = 10
 DJANGOBB_SIGNATURE_MAX_LENGTH = 2000
 DJANGOBB_AUTHORITY_SUPPORT = False
 DJANGOBB_DEFAULT_TIME_ZONE = 0
-DJANGOBB_IMAGE_HOST_WHITELIST = r'(?:(?:tinypic|photobucket|cubeupload)\.com|imageshack\.(?:com|us)|modshare\.tk|(?:scratchr|wikipedia|wikimedia|modshare\.futuresight)\.org|\.edu|scratch-dach\.info)$'
-DJANGOBB_LANGUAGE_FILTER = r'(?i)\b(fugly|(\w*?)fuck(\w*?)|f(u|v|\*)?c?k(ing?)?|(\w*?)sh(i|1|l)t(\w*?)|cr(a|@|\*)p(per|ped|y)?|(bad|dumb|jack)?(a|@)ss(h(o|0)le|wipe)?|(bad|dumb|jack)?(a|@)rse(h(o|0)le|wipe)?|bastard|b(i|1|l|\*)?t?ch(e?s)?|cunt|cum|(god?)?dam(n|m)(it)?|douche(\w*?)|(new)?fag(got|gat)?|frig(gen|gin|ging)?|omfg|piss(\w*?)|porn|rape|retard|sex|s e x|shat|slut|tit|wh(o|0)re(\w*?)|wt(f|fh|h))(s|ed)?\b'
+DJANGOBB_IMAGE_HOST_WHITELIST = r'(?:(?:tinypic|photobucket|cubeupload)\.com|imageshack\.(?:com|us)|modshare\.tk|(?:scratchr|wikipedia|wikimedia|modshare\.futuresight)\.org|(?<!scratch\.mit)\.edu|scratch-dach\.info)$'
+
+# Allowed paths for embedded images hosted on *.scratch.mit.edu
+DJANGOBB_SCRATCH_IMAGE_PATH_WHITELIST = r'^(?:/scratchr2/static|/static/site/|/get_image/|/w/images/)'
+#rot13 the filter for the sake of Scratchers linking to the public repo
+DJANGOBB_LANGUAGE_FILTER = codecs.encode(r'(?v)\o(shtyl|(\j*?)shpx(\j*?)|s(h|i|\*)?p?x(vat?)?|(\j*?)fu(v|1|y)g(\j*?)|pe(n|@|\*)c(cre|crq|l)?|(onq|qhzo|wnpx)?(n|@)ff(u(b|0)yr|jvcr)?|(onq|qhzo|wnpx)?(n|@)efr(u(b|0)yr|jvcr)?|onfgneq|o(v|1|y|\*)?g?pu(r?f)?|phag|phz|(tbq?)?qnz(a|z)(vg)?|qbhpur(\j*?)|(arj)?snt(tbg|tng)?|sevt(tra|tva|tvat)?|bzst|cvff(\j*?)|cbea|encr|ergneq|frk|f r k|fung|fyhg|gvg|ju(b|0)er(\j*?)|jg(s|su|u))(f|rq)?\o', 'rot13')
