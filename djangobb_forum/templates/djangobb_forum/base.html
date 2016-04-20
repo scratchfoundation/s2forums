@@ -56,14 +56,14 @@
                 if (match) break;
             }
         }
-        if (!match) return;
-        var forum_id = parseInt(match[1]);
-        var code = forum_langs[forum_id];
+        scratchblocks._currentLanguages = ['en'];
+        if (match) {
+          var forum_id = parseInt(match[1]);
+          var code = forum_langs[forum_id];
 
-        if (code in scratchblocks.allLanguages) {
-            scratchblocks._currentLanguages = ['en', code];
-        } else {
-            scratchblocks._currentLanguage = ['en'];
+          if (code in scratchblocks.allLanguages) {
+              scratchblocks._currentLanguages = ['en', code];
+          }
         }
     })(jQuery);
     </script>

@@ -47,10 +47,14 @@ a:hover, a:active {
             if (match) break;
         }
     }
-    if (!match) return;
-    var forum_id = parseInt(match[1]);
-    var code = forum_langs[forum_id];
-    var languages = (code in scratchblocks.allLanguages) ? ['en', code] : ['en'];
+    var languages = ['en'];
+    if (match) {
+      var forum_id = parseInt(match[1]);
+      var code = forum_langs[forum_id];
+      if (scratchblocks.allLanguages.hasOwnProperty(code)) {
+        languages = ['en', code];
+      }
+    }
 
     scratchblocks.renderMatching('pre.blocks', {
       languages: languages,
