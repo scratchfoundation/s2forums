@@ -1,10 +1,12 @@
 /* This should be loaded:
- *   - after scratchblocks2.js
+ *   - after scratchblocks.js
  *   - after markitup.js
- *   - after scratchblocks2._currentLanguage is set
+ *   - after scratchblocks._currentLanguage is set
  *   - before markItUp() is run
- *   - before any scratchblocks2.parse() calls
+ *   - before any scratchblocks.parse() calls
  */
+
+// TODO upgrade to v3
 
 // TODO (function($){
 

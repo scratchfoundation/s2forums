@@ -4,7 +4,6 @@
 <link href="{{ STATIC_URL }}/djangobb_forum/themes/scratch_default_theme_copy/style.css" rel="stylesheet">
 <link href="{{ STATIC_URL }}/djangobb_forum/themes/scratch_default_theme_copy/css/default_cs.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/djangobb_forum/css/pygments.css" />
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/djangobb_forum/scratchblocks2/scratchblocks2.css" />
 <style>
 body {
     color: #211922;
@@ -28,8 +27,8 @@ a:hover, a:active {
 </div>
 <script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.min.js"></script> 
 
-<script type="text/javascript" src="{{ STATIC_URL }}/djangobb_forum/scratchblocks2/scratchblocks2.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}/djangobb_forum/scratchblocks2/translations.js" charset="utf-8"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}/djangobb_forum/scratchblocks/scratchblocks.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}/djangobb_forum/scratchblocks/translations.js" charset="utf-8"></script>
 <script type="text/javascript">
 (function ($) {
     var forum_langs = {13: "de", 14: "es", 15: "fr", 16: "zh_CN", 17: "pl",
@@ -51,13 +50,13 @@ a:hover, a:active {
     if (!match) return;
     var forum_id = parseInt(match[1]);
     var code = forum_langs[forum_id];
+    var languages = (code in scratchblocks.allLanguages) ? ['en', code] : ['en'];
 
-    if (code in scratchblocks2._translations) {
-        scratchblocks2.load_language(scratchblocks2._translations[code]);
-    }
+    scratchblocks.renderMatching('pre.blocks', {
+      languages: languages,
+    });
 })(jQuery);
 
-scratchblocks2.parse('pre.blocks');
 </script>
 
 </body>
