@@ -59,13 +59,13 @@ var scratchblocks = function () {
   // List of classes we're allowed to override.
 
   var overrideCategories = ["motion", "looks", "sound", "pen", "variables", "list", "events", "control", "sensing", "operators", "custom", "custom-arg", "extension", "grey", "obsolete"];
-  var overrideShapes = ["hat", "cap", "stack", "boolean", "reporter", "celse", "cend", "ring"];
+  var overrideShapes = ["hat", "cap", "stack", "boolean", "reporter", "ring"];
 
   // languages that should be displayed right to left
   var rtlLanguages = ['ar', 'fa', 'he'];
 
   // List of commands taken from Scratch
-  var scratchCommands = [ ["move %n steps", " ", 1, "forward:"], ["turn @turnRight %n degrees", " ", 1, "turnRight:"], ["turn @turnLeft %n degrees", " ", 1, "turnLeft:"], ["point in direction %d.direction", " ", 1, "heading:"], ["point towards %m.spriteOrMouse", " ", 1, "pointTowards:"], ["go to x:%n y:%n", " ", 1, "gotoX:y:"], ["go to %m.location", " ", 1, "gotoSpriteOrMouse:"], ["glide %n secs to x:%n y:%n", " ", 1, "glideSecs:toX:y:elapsed:from:"], ["change x by %n", " ", 1, "changeXposBy:"], ["set x to %n", " ", 1, "xpos:"], ["change y by %n", " ", 1, "changeYposBy:"], ["set y to %n", " ", 1, "ypos:"], ["set rotation style %m.rotationStyle", " ", 1, "setRotationStyle"], ["say %s for %n secs", " ", 2, "say:duration:elapsed:from:"], ["say %s", " ", 2, "say:"], ["think %s for %n secs", " ", 2, "think:duration:elapsed:from:"], ["think %s", " ", 2, "think:"], ["show", " ", 2, "show"], ["hide", " ", 2, "hide"], ["switch costume to %m.costume", " ", 2, "lookLike:"], ["next costume", " ", 2, "nextCostume"], ["next backdrop", " ", 102, "nextScene"], ["switch backdrop to %m.backdrop", " ", 2, "startScene"], ["switch backdrop to %m.backdrop and wait", " ", 102, "startSceneAndWait"], ["change %m.effect effect by %n", " ", 2, "changeGraphicEffect:by:"], ["set %m.effect effect to %n", " ", 2, "setGraphicEffect:to:"], ["clear graphic effects", " ", 2, "filterReset"], ["change size by %n", " ", 2, "changeSizeBy:"], ["set size to %n%", " ", 2, "setSizeTo:"], ["go to front", " ", 2, "comeToFront"], ["go back %n layers", " ", 2, "goBackByLayers:"], ["play sound %m.sound", " ", 3, "playSound:"], ["play sound %m.sound until done", " ", 3, "doPlaySoundAndWait"], ["stop all sounds", " ", 3, "stopAllSounds"], ["play drum %d.drum for %n beats", " ", 3, "playDrum"], ["rest for %n beats", " ", 3, "rest:elapsed:from:"], ["play note %d.note for %n beats", " ", 3, "noteOn:duration:elapsed:from:"], ["set instrument to %d.instrument", " ", 3, "instrument:"], ["change volume by %n", " ", 3, "changeVolumeBy:"], ["set volume to %n%", " ", 3, "setVolumeTo:"], ["change tempo by %n", " ", 3, "changeTempoBy:"], ["set tempo to %n bpm", " ", 3, "setTempoTo:"], ["clear", " ", 4, "clearPenTrails"], ["stamp", " ", 4, "stampCostume"], ["pen down", " ", 4, "putPenDown"], ["pen up", " ", 4, "putPenUp"], ["set pen color to %c", " ", 4, "penColor:"], ["change pen color by %n", " ", 4, "changePenHueBy:"], ["set pen color to %n", " ", 4, "setPenHueTo:"], ["change pen shade by %n", " ", 4, "changePenShadeBy:"], ["set pen shade to %n", " ", 4, "setPenShadeTo:"], ["change pen size by %n", " ", 4, "changePenSizeBy:"], ["set pen size to %n", " ", 4, "penSize:"], ["when @greenFlag clicked", "h", 5, "whenGreenFlag"], ["when %m.key key pressed", "h", 5, "whenKeyPressed"], ["when this sprite clicked", "h", 5, "whenClicked"], ["when backdrop switches to %m.backdrop", "h", 5, "whenSceneStarts"], ["when %m.triggerSensor > %n", "h", 5, "whenSensorGreaterThan"], ["when I receive %m.broadcast", "h", 5, "whenIReceive"], ["broadcast %m.broadcast", " ", 5, "broadcast:"], ["broadcast %m.broadcast and wait", " ", 5, "doBroadcastAndWait"], ["wait %n secs", " ", 6, "wait:elapsed:from:"], ["repeat %n", "c", 6, "doRepeat"], ["forever", "cf",6, "doForever"], ["if %b then", "c", 6, "doIf"], ["if %b then", "e", 6, "doIfElse"], ["wait until %b", " ", 6, "doWaitUntil"], ["repeat until %b", "c", 6, "doUntil"], ["stop %m.stop", "f", 6, "stopScripts"], ["when I start as a clone", "h", 6, "whenCloned"], ["create clone of %m.spriteOnly", " ", 6, "createCloneOf"], ["delete this clone", "f", 6, "deleteClone"], ["ask %s and wait", " ", 7, "doAsk"], ["turn video %m.videoState", " ", 7, "setVideoState"], ["set video transparency to %n%", " ", 7, "setVideoTransparency"], ["reset timer", " ", 7, "timerReset"], ["set %m.var to %s", " ", 9, "setVar:to:"], ["change %m.var by %n", " ", 9, "changeVar:by:"], ["show variable %m.var", " ", 9, "showVariable:"], ["hide variable %m.var", " ", 9, "hideVariable:"], ["add %s to %m.list", " ", 12, "append:toList:"], ["delete %d.listDeleteItem of %m.list", " ", 12, "deleteLine:ofList:"], ["if on edge, bounce", " ", 1, "bounceOffEdge"], ["insert %s at %d.listItem of %m.list", " ", 12, "insert:at:ofList:"], ["replace item %d.listItem of %m.list with %s", " ", 12, "setLine:ofList:to:"], ["show list %m.list", " ", 12, "showList:"], ["hide list %m.list", " ", 12, "hideList:"], ["x position", "r", 1, "xpos"], ["y position", "r", 1, "ypos"], ["direction", "r", 1, "heading"], ["costume #", "r", 2, "costumeIndex"], ["size", "r", 2, "scale"], ["backdrop name", "r", 102, "sceneName"], ["backdrop #", "r", 102, "backgroundIndex"], ["volume", "r", 3, "volume"], ["tempo", "r", 3, "tempo"], ["touching %m.touching?", "b", 7, "touching:"], ["touching color %c?", "b", 7, "touchingColor:"], ["color %c is touching %c?", "b", 7, "color:sees:"], ["distance to %m.spriteOrMouse", "r", 7, "distanceTo:"], ["answer", "r", 7, "answer"], ["key %m.key pressed?", "b", 7, "keyPressed:"], ["mouse down?", "b", 7, "mousePressed"], ["mouse x", "r", 7, "mouseX"], ["mouse y", "r", 7, "mouseY"], ["loudness", "r", 7, "soundLevel"], ["video %m.videoMotionType on %m.stageOrThis", "r", 7, "senseVideoMotion"], ["timer", "r", 7, "timer"], ["%m.attribute of %m.spriteOrStage", "r", 7, "getAttribute:of:"], ["current %m.timeAndDate", "r", 7, "timeAndDate"], ["days since 2000", "r", 7, "timestamp"], ["username", "r", 7, "getUserName"], ["%n + %n", "r", 8, "+"], ["%n - %n", "r", 8, "-"], ["%n * %n", "r", 8, "*"], ["%n / %n", "r", 8, "/"], ["pick random %n to %n", "r", 8, "randomFrom:to:"], ["%s < %s", "b", 8, "<"], ["%s = %s", "b", 8, "="], ["%s > %s", "b", 8, ">"], ["%b and %b", "b", 8, "&"], ["%b or %b", "b", 8, "|"], ["not %b", "b", 8, "not"], ["join %s %s", "r", 8, "concatenate:with:"], ["letter %n of %s", "r", 8, "letter:of:"], ["length of %s", "r", 8, "stringLength:"], ["%n mod %n", "r", 8, "%"], ["round %n", "r", 8, "rounded"], ["%m.mathOp of %n", "r", 8, "computeFunction:of:"], ["item %d.listItem of %m.list", "r", 12, "getLine:ofList:"], ["length of %m.list", "r", 12, "lineCountOfList:"], ["%m.list contains %s?", "b", 12, "list:contains:"], ["when %m.booleanSensor", "h", 20, ""], ["when %m.sensor %m.lessMore %n", "h", 20, ""], ["sensor %m.booleanSensor?", "b", 20, ""], ["%m.sensor sensor value", "r", 20, ""], ["turn %m.motor on for %n secs", " ", 20, ""], ["turn %m.motor on", " ", 20, ""], ["turn %m.motor off", " ", 20, ""], ["set %m.motor power to %n", " ", 20, ""], ["set %m.motor2 direction to %m.motorDirection", " ", 20, ""], ["when distance %m.lessMore %n", "h", 20, ""], ["when tilt %m.eNe %n", "h", 20, ""], ["distance", "r", 20, ""], ["tilt", "r", 20, ""], ["turn %m.motor on for %n seconds", " ", 20, ""], ["set light color to %n", " ", 20, ""], ["play note %n for %n seconds", " ", 20, ""], ["when tilted", "h", 20, ""], ["tilt %m.xxx", "r", 20, ""], ["else", "else", 6, ""], ["end", "end", 6, ""], [". . .", " ", 42, ""], ["%n @addInput", "ring", 42, ""], ["if %b", "c", 0, "doIf"], ["if %b", "e", 0, "doIfElse"], ["forever if %b", "cf", 0, "doForeverIf"], ["stop script", "f", 0, "doReturn"], ["stop all", "f", 0, "stopAll"], ["switch to costume %m.costume", " ", 0, "lookLike:"], ["next background", " ", 0, "nextScene"], ["switch to background %m.backdrop", " ", 0, "startScene"], ["background #", "r", 0, "backgroundIndex"], ["loud?", "b", 0, "isLoud"], ];
+  var scratchCommands = [ ["move %n steps", " ", 1, "forward:"], ["turn @turnRight %n degrees", " ", 1, "turnRight:"], ["turn @turnLeft %n degrees", " ", 1, "turnLeft:"], ["point in direction %d.direction", " ", 1, "heading:"], ["point towards %m.spriteOrMouse", " ", 1, "pointTowards:"], ["go to x:%n y:%n", " ", 1, "gotoX:y:"], ["go to %m.location", " ", 1, "gotoSpriteOrMouse:"], ["glide %n secs to x:%n y:%n", " ", 1, "glideSecs:toX:y:elapsed:from:"], ["change x by %n", " ", 1, "changeXposBy:"], ["set x to %n", " ", 1, "xpos:"], ["change y by %n", " ", 1, "changeYposBy:"], ["set y to %n", " ", 1, "ypos:"], ["set rotation style %m.rotationStyle", " ", 1, "setRotationStyle"], ["say %s for %n secs", " ", 2, "say:duration:elapsed:from:"], ["say %s", " ", 2, "say:"], ["think %s for %n secs", " ", 2, "think:duration:elapsed:from:"], ["think %s", " ", 2, "think:"], ["show", " ", 2, "show"], ["hide", " ", 2, "hide"], ["switch costume to %m.costume", " ", 2, "lookLike:"], ["next costume", " ", 2, "nextCostume"], ["next backdrop", " ", 102, "nextScene"], ["switch backdrop to %m.backdrop", " ", 2, "startScene"], ["switch backdrop to %m.backdrop and wait", " ", 102, "startSceneAndWait"], ["change %m.effect effect by %n", " ", 2, "changeGraphicEffect:by:"], ["set %m.effect effect to %n", " ", 2, "setGraphicEffect:to:"], ["clear graphic effects", " ", 2, "filterReset"], ["change size by %n", " ", 2, "changeSizeBy:"], ["set size to %n%", " ", 2, "setSizeTo:"], ["go to front", " ", 2, "comeToFront"], ["go back %n layers", " ", 2, "goBackByLayers:"], ["play sound %m.sound", " ", 3, "playSound:"], ["play sound %m.sound until done", " ", 3, "doPlaySoundAndWait"], ["stop all sounds", " ", 3, "stopAllSounds"], ["play drum %d.drum for %n beats", " ", 3, "playDrum"], ["rest for %n beats", " ", 3, "rest:elapsed:from:"], ["play note %d.note for %n beats", " ", 3, "noteOn:duration:elapsed:from:"], ["set instrument to %d.instrument", " ", 3, "instrument:"], ["change volume by %n", " ", 3, "changeVolumeBy:"], ["set volume to %n%", " ", 3, "setVolumeTo:"], ["change tempo by %n", " ", 3, "changeTempoBy:"], ["set tempo to %n bpm", " ", 3, "setTempoTo:"], ["clear", " ", 4, "clearPenTrails"], ["stamp", " ", 4, "stampCostume"], ["pen down", " ", 4, "putPenDown"], ["pen up", " ", 4, "putPenUp"], ["set pen color to %c", " ", 4, "penColor:"], ["change pen color by %n", " ", 4, "changePenHueBy:"], ["set pen color to %n", " ", 4, "setPenHueTo:"], ["change pen shade by %n", " ", 4, "changePenShadeBy:"], ["set pen shade to %n", " ", 4, "setPenShadeTo:"], ["change pen size by %n", " ", 4, "changePenSizeBy:"], ["set pen size to %n", " ", 4, "penSize:"], ["when @greenFlag clicked", "h", 5, "whenGreenFlag"], ["when %m.key key pressed", "h", 5, "whenKeyPressed"], ["when this sprite clicked", "h", 5, "whenClicked"], ["when backdrop switches to %m.backdrop", "h", 5, "whenSceneStarts"], ["when %m.triggerSensor > %n", "h", 5, "whenSensorGreaterThan"], ["when I receive %m.broadcast", "h", 5, "whenIReceive"], ["broadcast %m.broadcast", " ", 5, "broadcast:"], ["broadcast %m.broadcast and wait", " ", 5, "doBroadcastAndWait"], ["wait %n secs", " ", 6, "wait:elapsed:from:"], ["repeat %n", "c", 6, "doRepeat"], ["forever", "cf",6, "doForever"], ["if %b then", "c", 6, "doIf"], ["if %b then", "e", 6, "doIfElse"], ["wait until %b", " ", 6, "doWaitUntil"], ["repeat until %b", "c", 6, "doUntil"], ["stop %m.stop", "f", 6, "stopScripts"], ["when I start as a clone", "h", 6, "whenCloned"], ["create clone of %m.spriteOnly", " ", 6, "createCloneOf"], ["delete this clone", "f", 6, "deleteClone"], ["ask %s and wait", " ", 7, "doAsk"], ["turn video %m.videoState", " ", 7, "setVideoState"], ["set video transparency to %n%", " ", 7, "setVideoTransparency"], ["reset timer", " ", 7, "timerReset"], ["set %m.var to %s", " ", 9, "setVar:to:"], ["change %m.var by %n", " ", 9, "changeVar:by:"], ["show variable %m.var", " ", 9, "showVariable:"], ["hide variable %m.var", " ", 9, "hideVariable:"], ["add %s to %m.list", " ", 12, "append:toList:"], ["delete %d.listDeleteItem of %m.list", " ", 12, "deleteLine:ofList:"], ["if on edge, bounce", " ", 1, "bounceOffEdge"], ["insert %s at %d.listItem of %m.list", " ", 12, "insert:at:ofList:"], ["replace item %d.listItem of %m.list with %s", " ", 12, "setLine:ofList:to:"], ["show list %m.list", " ", 12, "showList:"], ["hide list %m.list", " ", 12, "hideList:"], ["x position", "r", 1, "xpos"], ["y position", "r", 1, "ypos"], ["direction", "r", 1, "heading"], ["costume #", "r", 2, "costumeIndex"], ["size", "r", 2, "scale"], ["backdrop name", "r", 102, "sceneName"], ["backdrop #", "r", 102, "backgroundIndex"], ["volume", "r", 3, "volume"], ["tempo", "r", 3, "tempo"], ["touching %m.touching?", "b", 7, "touching:"], ["touching color %c?", "b", 7, "touchingColor:"], ["color %c is touching %c?", "b", 7, "color:sees:"], ["distance to %m.spriteOrMouse", "r", 7, "distanceTo:"], ["answer", "r", 7, "answer"], ["key %m.key pressed?", "b", 7, "keyPressed:"], ["mouse down?", "b", 7, "mousePressed"], ["mouse x", "r", 7, "mouseX"], ["mouse y", "r", 7, "mouseY"], ["loudness", "r", 7, "soundLevel"], ["video %m.videoMotionType on %m.stageOrThis", "r", 7, "senseVideoMotion"], ["timer", "r", 7, "timer"], ["%m.attribute of %m.spriteOrStage", "r", 7, "getAttribute:of:"], ["current %m.timeAndDate", "r", 7, "timeAndDate"], ["days since 2000", "r", 7, "timestamp"], ["username", "r", 7, "getUserName"], ["%n + %n", "r", 8, "+"], ["%n - %n", "r", 8, "-"], ["%n * %n", "r", 8, "*"], ["%n / %n", "r", 8, "/"], ["pick random %n to %n", "r", 8, "randomFrom:to:"], ["%s < %s", "b", 8, "<"], ["%s = %s", "b", 8, "="], ["%s > %s", "b", 8, ">"], ["%b and %b", "b", 8, "&"], ["%b or %b", "b", 8, "|"], ["not %b", "b", 8, "not"], ["join %s %s", "r", 8, "concatenate:with:"], ["letter %n of %s", "r", 8, "letter:of:"], ["length of %s", "r", 8, "stringLength:"], ["%n mod %n", "r", 8, "%"], ["round %n", "r", 8, "rounded"], ["%m.mathOp of %n", "r", 8, "computeFunction:of:"], ["item %d.listItem of %m.list", "r", 12, "getLine:ofList:"], ["length of %m.list", "r", 12, "lineCountOfList:"], ["%m.list contains %s?", "b", 12, "list:contains:"], ["when %m.booleanSensor", "h", 20, ""], ["when %m.sensor %m.lessMore %n", "h", 20, ""], ["sensor %m.booleanSensor?", "b", 20, ""], ["%m.sensor sensor value", "r", 20, ""], ["turn %m.motor on for %n secs", " ", 20, ""], ["turn %m.motor on", " ", 20, ""], ["turn %m.motor off", " ", 20, ""], ["set %m.motor power to %n", " ", 20, ""], ["set %m.motor2 direction to %m.motorDirection", " ", 20, ""], ["when distance %m.lessMore %n", "h", 20, ""], ["when tilt %m.eNe %n", "h", 20, ""], ["distance", "r", 20, ""], ["tilt", "r", 20, ""], ["turn %m.motor on for %n seconds", " ", 20, ""], ["set light color to %n", " ", 20, ""], ["play note %n for %n seconds", " ", 20, ""], ["when tilted", "h", 20, ""], ["tilt %m.xxx", "r", 20, ""], ["else", "else", 6, ""], ["end", "end", 6, ""], [". . .", " ", 42, ""], ["%n @addInput", "ring", 42, ""], ["user id", "r", 0, ""], ["if %b", "c", 0, "doIf"], ["if %b", "e", 0, "doIfElse"], ["forever if %b", "cf", 0, "doForeverIf"], ["stop script", "f", 0, "doReturn"], ["stop all", "f", 0, "stopAll"], ["switch to costume %m.costume", " ", 0, "lookLike:"], ["next background", " ", 0, "nextScene"], ["switch to background %m.backdrop", " ", 0, "startScene"], ["background #", "r", 0, "backgroundIndex"], ["loud?", "b", 0, "isLoud"], ];
 
   var categoriesById = {
     0:  "obsolete",
@@ -99,7 +99,8 @@ var scratchblocks = function () {
     'ring': 'ring',
   };
 
-  var inputPat = /(%[a-zA-Z](?:\.[a-zA-Z0-9]+)?)/g;
+  var inputPat = /(%[a-zA-Z](?:\.[a-zA-Z0-9]+)?)/;
+  var inputPatGlobal = new RegExp(inputPat.source, 'g');
   var iconPat = /(@[a-zA-Z]+)/;
   var splitPat = new RegExp([inputPat.source, '|', iconPat.source].join(''), 'g');
 
@@ -116,7 +117,7 @@ var scratchblocks = function () {
   }
 
   function hashSpec(spec) {
-    return minifyHash(spec.replace(inputPat, " _ "));
+    return minifyHash(spec.replace(inputPatGlobal, " _ "));
   }
 
   function minifyHash(hash) {
@@ -129,6 +130,7 @@ var scratchblocks = function () {
         .replace(/ö/g,"o")
         .replace(/ü/g,"u")
         .replace('. . .', '...')
+        .replace(/^…$/, '...')
     ).trim();
   }
 
@@ -185,6 +187,12 @@ var scratchblocks = function () {
       blocksByHash[aliasHash] = block;
     });
 
+    language.nativeDropdowns = {};
+    Object.keys(language.dropdowns).forEach(function(name) {
+      var nativeName = language.dropdowns[name];
+      language.nativeDropdowns[nativeName] = name;
+    });
+
     language.code = code;
     allLanguages[code] = language;
   }
@@ -203,8 +211,6 @@ var scratchblocks = function () {
       "when gf clicked": "when @greenFlag clicked",
       "when flag clicked": "when @greenFlag clicked",
       "when green flag clicked": "when @greenFlag clicked",
-      "...": ". . .",
-      "…": ". . .",
     },
 
     define: ["define"],
@@ -217,6 +223,8 @@ var scratchblocks = function () {
 
     // For detecting the "stop" cap / stack block
     osis: ["other scripts in sprite", "other scripts in stage"],
+
+    dropdowns: {},
 
     commands: {},
   };
@@ -251,6 +259,14 @@ var scratchblocks = function () {
     return last.shape === 'dropdown';
   });
 
+  disambig('penColor:', 'setPenHueTo:', function(children, lang) {
+    // Color block if color input, otherwise numeric
+    var last = children[children.length - 1];
+    // If variable, assume color input, since the RGBA hack is common.
+    // TODO fix Scratch :P
+    return (last.isInput && last.isColor) || last.isBlock;
+  });
+
   blocksBySelector['stopScripts'].specialCase = function(info, children, lang) {
     // Cap block unless argument is "other scripts in sprite"
     var last = children[children.length - 1];
@@ -264,6 +280,29 @@ var scratchblocks = function () {
   }
 
 
+  function lookupHash(hash, info, children, languages) {
+    for (var i=0; i<languages.length; i++) {
+      var lang = languages[i];
+      if (lang.blocksByHash.hasOwnProperty(hash)) {
+        var block = lang.blocksByHash[hash];
+        if (block.specialCase) {
+          block = block.specialCase(info, children, lang) || block;
+        }
+        return { type: block, lang: lang };
+      }
+    }
+  }
+
+  function lookupDropdown(name, languages) {
+    for (var i=0; i<languages.length; i++) {
+      var lang = languages[i];
+      if (lang.nativeDropdowns.hasOwnProperty(name)) {
+        var nativeName = lang.nativeDropdowns[name];
+        return nativeName;
+      }
+    }
+  }
+
   function applyOverrides(info, overrides) {
     for (var i=0; i<overrides.length; i++) {
       var name = overrides[i];
@@ -276,8 +315,6 @@ var scratchblocks = function () {
         info.categoryIsDefault = false;
       } else if (overrideShapes.indexOf(name) > -1) {
         info.shape = name;
-      } else if (name === 'cstart') {
-        info.shape = 'c-block';
       } else if (name === 'loop') {
         info.hasLoopArrow = true;
       }
@@ -305,41 +342,28 @@ var scratchblocks = function () {
     var hash = info.hash = minifyHash(words.join(" "));
 
     // paint
-    for (var i=0; i<languages.length; i++) {
-      var lang = languages[i];
-      if (lang.blocksByHash.hasOwnProperty(hash)) {
-        var block = lang.blocksByHash[hash];
-        if (block.specialCase) {
-          block = block.specialCase(info, children, lang) || block;
-        }
+    var o = lookupHash(hash, info, children, languages);
+    if (o) {
+      var lang = o.lang;
+      var type = o.type;
+      info.language = lang;
+      info.isRTL = rtlLanguages.indexOf(lang.code) > -1;
 
-        info.language = lang;
-        info.isRTL = rtlLanguages.indexOf(lang.code) > -1;
+      if (type.shape === 'ring' ? info.shape === 'reporter' : info.shape === 'stack') {
+        info.shape = type.shape;
+      }
+      info.category = type.category;
+      info.categoryIsDefault = false;
+      info.selector = type.selector; // for toJSON
+      info.hasLoopArrow = type.hasLoopArrow;
 
-        if (block.shape === 'ring' ? info.shape === 'reporter' : info.shape === 'stack') {
-          info.shape = block.shape;
-        }
-        info.category = block.category;
-        info.categoryIsDefault = false;
-        info.selector = block.selector; // for backpack
-        info.hasLoopArrow = block.hasLoopArrow;
-
-        // image replacement
-        if (iconPat.test(block.spec) || lang.aliases[hash]) {
-          var langInfo = parseSpec(lang.commands[block.spec] || block.spec);
-          var inputs = children.filter(function(child) {
-            return !child.isLabel;
-          });
-          children = langInfo.parts.map(function(part) {
-            part = part.trim();
-            if (!part) return;
-            return inputPat.test(part) ? inputs.shift()
-                 : iconPat.test(part) ? new Icon(part.slice(1)) : new Label(part);
-          }).filter(bool);
-        }
+      // ellipsis block
+      if (type.spec === ". . .") {
+        children = [new Label(". . .")];
       }
     }
 
+    // overrides
     applyOverrides(info, overrides);
 
     // loop arrows
@@ -347,9 +371,14 @@ var scratchblocks = function () {
       children.push(new Icon('loopArrow'));
     }
 
-    return new Block(info, children);
-  }
+    var block = new Block(info, children);
 
+    // image replacement
+    if (type && iconPat.test(type.spec)) {
+      block.translate(lang, true);
+    }
+    return block;
+  }
 
   /* * */
 
@@ -387,6 +416,11 @@ var scratchblocks = function () {
         hasLoopArrow: false,
       };
       return paintBlock(info, children, languages);
+    }
+
+    function makeMenu(shape, value) {
+      var menu = lookupDropdown(value, languages) || value;
+      return new Input(shape, value, menu);
     }
 
     function pParts(end) {
@@ -437,12 +471,24 @@ var scratchblocks = function () {
             children.push(pIcon());
             label = null;
             break;
+          case '@':
+            next();
+            var name = "";
+            while (tok && /[a-zA-Z]/.test(tok)) {
+              name += tok;
+              next();
+            }
+            children.push(Icon.icons.hasOwnProperty(name) ? new Icon(name) : new Label("@" + name));
+            label = null;
+            break;
+          case '\\':
+            next(); // escape character
+            // fall-thru
           case ':':
-            if (peek() === ':') {
+            if (tok === ':' && peek() === ':') {
               children.push(pOverrides(end));
               return children;
             } // fall-thru
-          case '/':
           default:
             if (!label) children.push(label = new Label(""));
             label.value += tok;
@@ -471,7 +517,7 @@ var scratchblocks = function () {
       if (hexColorPat.test(s)) {
         return new Input('color', s);
       }
-      return !escapeV && / v$/.test(s) ? new Input('dropdown', s.slice(0, s.length - 2))
+      return !escapeV && / v$/.test(s) ? makeMenu('dropdown', s.slice(0, s.length - 2))
                                        : new Input('string', s);
     }
 
@@ -483,6 +529,9 @@ var scratchblocks = function () {
       // define hats
       var first = children[0];
       if (first && first.isLabel && isDefine(first.value)) {
+        if (children.length < 2) {
+          children.push(makeBlock('outline', []));
+        }
         return makeBlock('define-hat', children);
       }
 
@@ -525,7 +574,7 @@ var scratchblocks = function () {
         if (i > 1 && last.value === 'v') {
           children.pop();
           var value = children.map(function(l) { return l.value; }).join(" ");
-          return new Input('number-dropdown', value);
+          return makeMenu('number-dropdown', value);
         }
       }
 
@@ -638,8 +687,11 @@ var scratchblocks = function () {
           case '[': parseArg('string', ']'); break;
           case '<': parseArg('boolean', '>'); break;
           case ' ': next(); label = null; break;
+          case '\\':
+            next();
+            // fall-thru
           case ':':
-            if (peek() === ':') {
+            if (tok === ':' && peek() === ':') {
               children.push(pOverrides());
               break;
             } // fall-thru
@@ -857,7 +909,7 @@ var scratchblocks = function () {
             return !child.isLabel;
           });
           var input = inputs[argIndex];
-          if (input.isInput) {
+          if (input && input.isInput) {
             listNames[input.value] = true;
           }
         }
@@ -994,7 +1046,7 @@ var scratchblocks = function () {
     });
   }
 
-  function translate(dx, dy, el) {
+  function move(dx, dy, el) {
     setProps(el, {
       transform: ['translate(', dx, ' ', dy, ')'].join(''),
     });
@@ -1238,7 +1290,7 @@ var scratchblocks = function () {
 
     var archRoundness = Math.min(0.2, 35 / w);
 
-    return translate(0, y, group([
+    return move(0, y, group([
         procHatBase(w, q, archRoundness, props),
         procHatCap(w, q, archRoundness),
     ]));
@@ -1301,7 +1353,7 @@ var scratchblocks = function () {
   }
 
   function commentLine(width, props) {
-    return translate(-width, 9, rect(width, 2, extend(props, {
+    return move(-width, 9, rect(width, 2, extend(props, {
       class: 'comment-line',
     })));
   }
@@ -1349,7 +1401,7 @@ var scratchblocks = function () {
           fill: '#000',
           opacity: '0.3',
         }),
-        translate(-1, -1, el('path', {
+        move(-1, -1, el('path', {
           d: "M8 0l2 -2l0 -3l3 0l-4 -5l-4 5l3 0l0 3l-8 0l0 2",
           fill: '#fff',
           opacity: '0.9',
@@ -1479,7 +1531,9 @@ var scratchblocks = function () {
   Label.prototype.isLabel = true;
 
   Label.prototype.stringify = function() {
-    return this.value;
+    return (this.value
+      .replace(/([<>[\](){}])/g, "\\$1")
+    );
   };
 
   Label.prototype.measure = function() {
@@ -1577,9 +1631,10 @@ var scratchblocks = function () {
 
   /* Input */
 
-  var Input = function(shape, value) {
+  var Input = function(shape, value, menu) {
     this.shape = shape;
     this.value = value;
+    this.menu = menu || null;
 
     this.isRound = shape === 'number' || shape === 'number-dropdown';
     this.isBoolean = shape === 'boolean';
@@ -1597,27 +1652,88 @@ var scratchblocks = function () {
   Input.prototype.isInput = true;
 
   Input.fromJSON = function(lang, value, part) {
-    return new Input({
+    var shape = {
       b: 'boolean',
       n: 'number',
       s: 'string',
       d: 'number-dropdown',
       m: 'dropdown',
-    }[part[1]], value || "");
+      c: 'color',
+    }[part[1]];
+
+    if (shape === 'color') {
+      if (value < 0) value = 0xFFFFFFFF + value + 1;
+      var hex = value.toString(16);
+      hex = hex.slice(Math.max(0, hex.length - 6)); // last 6 characters
+      while (hex.length < 6) hex = '0' + hex;
+      if (hex[0] === hex[1] && hex[2] === hex[3] && hex[4] === hex[5]) {
+        hex = hex[0] + hex[2] + hex[4];
+      }
+      value = '#' + hex;
+    } else if (shape === 'dropdown') {
+      value = {
+        _mouse_: "mouse-pointer",
+        _myself_: "myself",
+        _stage_: "Stage",
+        _edge_: "edge",
+        _random_: "random position",
+      }[value] || value;
+    }
+    if (shape === 'dropdown' || shape === 'number-dropdown') {
+      var menu = value;
+      value = lang.dropdowns[value] || value;
+    }
+
+    return new Input(shape, value || "", menu);
   };
 
   Input.prototype.toJSON = function() {
+    if (this.isColor) {
+      assert(this.value[0] === '#');
+      var h = this.value.slice(1);
+      if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+      return parseInt(h, 16);
+      // TODO signed int?
+    }
+    if (this.hasArrow) {
+      var value = this.menu || this.value;
+      if (this.shape === 'dropdown') {
+        value = {
+          "mouse-pointer": "_mouse_",
+          "myself": "_myself",
+          "Stage": "_stage_",
+          "edge": "_edge_",
+          "random position": "_random_",
+        }[value] || value;
+      }
+      return value;
+    }
     return this.isBoolean ? false : this.value;
   };
 
   Input.prototype.stringify = function() {
-    var text = this.value || "";
+    if (this.isColor) {
+      assert(this.value[0] === '#');
+      return this.value;
+    }
+    var text = ((this.value ? "" + this.value : "")
+      .replace(/ v$/, " \\v")
+      .replace(/([\]\\])/g, "\\$1")
+    );
     if (this.hasArrow) text += " v";
     return this.isRound ? "(" + text + ")"
          : this.isSquare ? "[" + text + "]"
          : this.isBoolean ? "<>"
          : this.isStacK ? "{}"
          : text;
+  };
+
+  Input.prototype.translate = function(lang) {
+    if (this.hasArrow) {
+      var value = this.menu || this.value;
+      this.value = lang.dropdowns[value] || value;
+      this.label = new Label(this.value, ['literal-' + this.shape]);
+    }
   };
 
   Input.prototype.measure = function() {
@@ -1669,11 +1785,11 @@ var scratchblocks = function () {
     ]);
     if (this.hasLabel) {
       var x = this.isRound ? 5 : 4;
-      result.appendChild(translate(x, 0, label));
+      result.appendChild(move(x, 0, label));
     }
     if (this.hasArrow) {
       var y = this.shape === 'dropdown' ? 5 : 4;
-      result.appendChild(translate(w - 10, y, polygon({
+      result.appendChild(move(w - 10, y, polygon({
         points: [
           7, 0,
           3.5, 4,
@@ -1710,6 +1826,10 @@ var scratchblocks = function () {
     this.isEnd = shape === 'cend';
 
     this.x = 0;
+    this.width = null;
+    this.height = null;
+    this.firstLine = null;
+    this.innerWidth = null;
   };
   Block.prototype.isBlock = true;
 
@@ -1773,8 +1893,8 @@ var scratchblocks = function () {
     } else {
       var info = blocksBySelector[selector];
       assert(info, "unknown selector: " + selector);
-      var spec = lang.commands[info.spec];
-      var parts = parseSpec(spec).parts;
+      var spec = lang.commands[info.spec] || spec;
+      var parts = spec ? parseSpec(spec).parts : info.parts;
     }
     var children = parts.map(function(part) {
       if (inputPat.test(part)) {
@@ -1825,7 +1945,7 @@ var scratchblocks = function () {
         return ['call', this.info.call].concat(args);
       }
     }
-    if (!selector) return "";
+    if (!selector) throw "unknown block: " + this.info.hash;
     return [selector].concat(args);
   };
 
@@ -1834,12 +1954,46 @@ var scratchblocks = function () {
       return child.isScript ? "\n" + indent(child.stringify()) + "\n"
                             : child.stringify().trim() + " ";
     }).join("").trim();
-    if (this.info.shape === 'reporter' && this.info.category === 'list') text += " :: list";
-    if (this.info.category === 'custom' && this.info.shape !== 'define-hat') text += " :: custom";
+    if ((this.info.shape === 'reporter' && this.info.category === 'list')
+     || (this.info.category === 'custom' && this.info.shape === 'stack')) {
+      text += " :: " + this.info.category;
+      console.log(this, this.info.categoryIsDefault);
+    }
     return this.hasScript ? text + "\nend"
          : this.info.shape === 'reporter' ? "(" + text + ")"
          : this.info.shape === 'boolean' ? "<" + text + ">"
          : text;
+  };
+
+  Block.prototype.translate = function(lang, isShallow) {
+    var selector = this.info.selector;
+    if (!selector) return;
+    if (selector === 'procDef') {
+      assert(this.children[0].isLabel);
+      this.children[0] = new Label(lang.define[0] || english.define[0]);
+    }
+    var block = blocksBySelector[selector];
+    if (!block) return;
+    var nativeSpec = lang.commands[block.spec];
+    if (!nativeSpec) return;
+    var nativeInfo = parseSpec(nativeSpec);
+    var args = this.children.filter(function(child) {
+      return !child.isLabel && !child.isIcon;
+    });
+    if (!isShallow) args.forEach(function(child) {
+      child.translate(lang);
+    });
+    this.children = nativeInfo.parts.map(function(part) {
+      var part = part.trim();
+      if (!part) return;
+      return inputPat.test(part) ? args.shift()
+           : iconPat.test(part) ? new Icon(part.slice(1)) : new Label(part);
+    }).filter(bool);
+    args.forEach(function(arg) {
+      this.children.push(arg);
+    }.bind(this));
+    this.info.language = lang;
+    this.info.isRTL = rtlLanguages.indexOf(lang.code) > -1;
   };
 
   Block.prototype.measure = function() {
@@ -1985,7 +2139,8 @@ var scratchblocks = function () {
       var child = children[i];
       child.el = child.draw(this);
 
-      if (child.isScript && this.hasScript) {
+      if (child.isScript && this.isCommand) {
+        this.hasScript = true;
         pushLine();
         child.y = y;
         lines.push(child);
@@ -2022,13 +2177,15 @@ var scratchblocks = function () {
       this.height += p;
       pt += 2 * p;
     }
+    this.firstLine = lines[0];
+    this.innerWidth = innerWidth;
 
     var objects = [];
 
     for (var i=0; i<lines.length; i++) {
       var line = lines[i];
       if (line.isScript) {
-        objects.push(translate(15, line.y, line.el));
+        objects.push(move(15, line.y, line.el));
         continue;
       }
 
@@ -2037,7 +2194,7 @@ var scratchblocks = function () {
       for (var j=0; j<line.children.length; j++) {
         var child = line.children[j];
         if (child.isArrow) {
-          objects.push(translate(innerWidth - 15, this.height - 3, child.el));
+          objects.push(move(innerWidth - 15, this.height - 3, child.el));
           continue;
         }
 
@@ -2053,7 +2210,7 @@ var scratchblocks = function () {
             continue;
           }
         }
-        objects.push(translate(px + child.x, line.y + y|0, child.el));
+        objects.push(move(px + child.x, line.y + y|0, child.el));
       }
     }
 
@@ -2097,7 +2254,7 @@ var scratchblocks = function () {
       commentRect(this.width, this.height, {
         class: 'comment',
       }),
-      translate(8, 4, labelEl),
+      move(8, 4, labelEl),
     ]);
   };
 
@@ -2112,18 +2269,13 @@ var scratchblocks = function () {
   };
   Script.prototype.isScript = true;
 
-  Script.prototype.measure = function() {
-    for (var i=0; i<this.blocks.length; i++) {
-      this.blocks[i].measure();
-    }
-  };
-
-  Script.fromJSON = function(lang, array) {
+  Script.fromJSON = function(lang, blocks) {
     // x = array[0], y = array[1];
-    return new Script(array[2].map(Block.fromJSON.bind(null, lang)));
+    return new Script(blocks.map(Block.fromJSON.bind(null, lang)));
   };
 
   Script.prototype.toJSON = function() {
+    if (this.blocks[0] && this.blocks[0].isComment) return;
     return this.blocks.map(function(block) {
       return block.toJSON();
     });
@@ -2137,22 +2289,35 @@ var scratchblocks = function () {
     }).join("\n");
   };
 
+  Script.prototype.translate = function(lang) {
+    this.blocks.forEach(function(block) {
+      block.translate(lang);
+    });
+  };
+
+  Script.prototype.measure = function() {
+    for (var i=0; i<this.blocks.length; i++) {
+      this.blocks[i].measure();
+    }
+  };
+
   Script.prototype.draw = function(inside) {
     var children = [];
     var y = 0;
     this.width = 0;
     for (var i=0; i<this.blocks.length; i++) {
       var block = this.blocks[i];
-      children.push(translate(inside ? 0 : 2, y, block.draw()));
+      children.push(move(inside ? 0 : 2, y, block.draw()));
       y += block.height;
       this.width = Math.max(this.width, block.width);
 
       var comment = block.comment;
       if (comment) {
-        var cx = block.width + 2 + Comment.lineLength;
-        var cy = y - (block.height / 2);
+        var line = block.firstLine;
+        var cx = block.innerWidth + 2 + Comment.lineLength;
+        var cy = y - block.height + (line.height / 2);
         var el = comment.draw();
-        children.push(translate(cx, cy - comment.height / 2, el));
+        children.push(move(cx, cy - comment.height / 2, el));
         this.width = Math.max(this.width, cx + comment.width);
       }
     }
@@ -2176,15 +2341,22 @@ var scratchblocks = function () {
 
   Document.fromJSON = function(scriptable, lang) {
     var lang = lang || english;
-    var scripts = scriptable.scripts.map(Script.fromJSON.bind(null, lang));
+    var scripts = scriptable.scripts.map(function(array) {
+      var script = Script.fromJSON(lang, array[2]);
+      script.x = array[0];
+      script.y = array[1];
+      return script;
+    });
     // TODO scriptable.scriptComments
     return new Document(scripts);
   };
 
   Document.prototype.toJSON = function() {
     var jsonScripts = this.scripts.map(function(script) {
-      return [10, script.y + 10, script.toJSON()];
-    });
+      var jsonBlocks = script.toJSON();
+      if (!jsonBlocks) return;
+      return [10, script.y + 10, jsonBlocks];
+    }).filter(bool);
     return {
       scripts: jsonScripts,
       // scriptComments: [], // TODO
@@ -2195,6 +2367,12 @@ var scratchblocks = function () {
     return this.scripts.map(function(script) {
       return script.stringify();
     }).join("\n\n");
+  };
+
+  Document.prototype.translate = function(lang) {
+    this.scripts.forEach(function(script) {
+      script.translate(lang);
+    });
   };
 
   Document.prototype.measure = function() {
@@ -2221,7 +2399,7 @@ var scratchblocks = function () {
       var script = this.scripts[i];
       if (height) height += 10;
       script.y = height;
-      elements.push(translate(0, height, script.draw()));
+      elements.push(move(0, height, script.draw()));
       height += script.height;
       width = Math.max(width, script.width + 4);
     }
