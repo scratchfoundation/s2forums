@@ -19,51 +19,267 @@ mySettings.markupSet.forEach(function(item) {
     if (item.name === 'Scratchblocks') scratchblocksMenu = item;
 });
 
-var language = scratchblocks2.languages[scratchblocks2._currentLanguage];
+var code = scratchblocks._currentLanguages.slice().pop();
+var language = scratchblocks.allLanguages[code];
+function palette(name) {
+  if (!language.palette) return name;
+  return language.palette[capitalise(name)] || language.palette[name];
+}
 
-var specs = [["move %n steps"," ",1,10],["turn @turnRight %n degrees"," ",1,15],["turn @turnLeft %n degrees"," ",1,15],["point in direction %d.direction"," ",1,90],["point towards %m.spriteOrMouse"," ",1,""],["go to x:%n y:%n"," ",1],["go to %m.spriteOrMouse"," ",1,"mouse-pointer"],["glide %n secs to x:%n y:%n"," ",1],["change x by %n"," ",1,10],["set x to %n"," ",1,0],["change y by %n"," ",1,10],["set y to %n"," ",1,0],["if on edge, bounce"," ",1],["set rotation style %m.rotationStyle"," ",1,"left-right"],["x position","r",1],["y position","r",1],["direction","r",1],["say %s for %n secs"," ",2,"Hello!",2],["say %s"," ",2,"Hello!"],["think %s for %n secs"," ",2,"Hmm...",2],["think %s"," ",2,"Hmm..."],["show"," ",2],["hide"," ",2],["switch costume to %m.costume"," ",2,"costume1"],["next costume"," ",2],["switch backdrop to %m.backdrop"," ",2,"backdrop1"],["change %m.effect effect by %n"," ",2,"color",25],["set %m.effect effect to %n"," ",2,"color",0],["clear graphic effects"," ",2],["change size by %n"," ",2,10],["set size to %n%"," ",2,100],["go to front"," ",2],["go back %n layers"," ",2,1],["costume #","r",2],["backdrop name","r",2],["size","r",2],["switch backdrop to %m.backdrop"," ",102,"backdrop1"],["switch backdrop to %m.backdrop and wait"," ",102,"backdrop1"],["next backdrop"," ",102],["change %m.effect effect by %n"," ",102,"color",25],["set %m.effect effect to %n"," ",102,"color",0],["clear graphic effects"," ",102],["backdrop name","r",102],["backdrop #","r",102],["play sound %m.sound"," ",3,"pop"],["play sound %m.sound until done"," ",3,"pop"],["stop all sounds"," ",3],["play drum %d.drum for %n beats"," ",3,1,0.2],["rest for %n beats"," ",3,0.2],["play note %d.note for %n beats"," ",3,60,0.5],["set instrument to %d.instrument"," ",3,1],["change volume by %n"," ",3,-10],["set volume to %n%"," ",3,100],["volume","r",3],["change tempo by %n"," ",3,20],["set tempo to %n bpm"," ",3,60],["tempo","r",3],["clear"," ",4],["stamp"," ",4],["pen down"," ",4],["pen up"," ",4],["set pen color to %c"," ",4],["change pen color by %n"," ",4],["set pen color to %n"," ",4,0],["change pen shade by %n"," ",4],["set pen shade to %n"," ",4,50],["change pen size by %n"," ",4,1],["set pen size to %n"," ",4,1],["clear"," ",104],["when @greenFlag clicked","h",5],["when %m.key key pressed","h",5,"space"],["when this sprite clicked","h",5],["when backdrop switches to %m.backdrop","h",5,"backdrop1"],["when %m.triggerSensor > %n","h",5,"loudness",10],["when I receive %m.broadcast","h",5,""],["broadcast %m.broadcast"," ",5,""],["broadcast %m.broadcast and wait"," ",5,""],["wait %n secs"," ",6,1],["repeat %n","c",6,10],["forever","cf",6],["if %b then","c",6],["if %b then","e",6],["wait until %b"," ",6],["repeat until %b","c",6],["stop %m.stop","f",6,"all"],["when I start as a clone","h",6],["create clone of %m.spriteOnly"," ",6],["delete this clone","f",6],["wait %n secs"," ",106,1],["repeat %n","c",106,10],["forever","cf",106],["if %b then","c",106],["if %b then","e",106],["wait until %b"," ",106],["repeat until %b","c",106],["stop %m.stop","f",106,"all"],["create clone of %m.spriteOnly"," ",106],["touching %m.touching?","b",7,""],["touching color %c?","b",7],["color %c is touching %c?","b",7],["distance to %m.spriteOrMouse","r",7,""],["ask %s and wait"," ",7,"What's your name?"],["answer","r",7],["key %m.key pressed?","b",7,"space"],["mouse down?","b",7],["mouse x","r",7],["mouse y","r",7],["loudness","r",7],["video %m.videoMotionType on %m.stageOrThis","r",7,"motion"],["turn video %m.videoState"," ",7,"on"],["set video transparency to %n%"," ",7,50],["timer","r",7],["reset timer"," ",7],["%m.attribute of %m.spriteOrStage","r",7],["current %m.timeAndDate","r",7,"minute"],["days since 2000","r",7],["username","r",7],["ask %s and wait"," ",107,"What's your name?"],["answer","r",107],["key %m.key pressed?","b",107,"space"],["mouse down?","b",107],["mouse x","r",107],["mouse y","r",107],["loudness","r",107],["video %m.videoMotionType on %m.stageOrThis","r",107,"motion","Stage"],["turn video %m.videoState"," ",107,"on"],["set video transparency to %n%"," ",107,50],["timer","r",107],["reset timer"," ",107],["%m.attribute of %m.spriteOrStage","r",107],["current %m.timeAndDate","r",107,"minute"],["days since 2000","r",107],["username","r",107],["%n + %n","r",8,"",""],["%n - %n","r",8,"",""],["%n * %n","r",8,"",""],["%n / %n","r",8,"",""],["pick random %n to %n","r",8,1,10],["%s < %s","b",8,"",""],["%s = %s","b",8,"",""],["%s > %s","b",8,"",""],["%b and %b","b",8],["%b or %b","b",8],["not %b","b",8],["join %s %s","r",8,"hello ","world"],["letter %n of %s","r",8,1,"world"],["length of %s","r",8,"world"],["%n mod %n","r",8,"",""],["round %n","r",8,""],["%m.mathOp of %n","r",8,"sqrt",9],["set %m.var to %s"," ",9],["change %m.var by %n"," ",9],["show variable %m.var"," ",9],["hide variable %m.var"," ",9],["add %s to %m.list"," ",12],["delete %d.listDeleteItem of %m.list"," ",12],["insert %s at %d.listItem of %m.list"," ",12],["replace item %d.listItem of %m.list with %s"," ",12],["item %d.listItem of %m.list","r",12],["length of %m.list","r",12],["%m.list contains %s","b",12],["show list %m.list"," ",12],["hide list %m.list"," ",12]];
+var blocks = [
 
-var foo = '';
+  ["forward:", 10],
+  ["turnRight:", 15],
+  ["turnLeft:", 15],
+  "",
+  ["heading:", 90],
+  ["pointTowards:", ""],
+  "",
+  ["gotoX:y:"],
+  ["gotoSpriteOrMouse:", "mouse-pointer"],
+  ["glideSecs:toX:y:elapsed:from:"],
+  "",
+  ["changeXposBy:", 10],
+  ["xpos:", 0],
+  ["changeYposBy:", 10],
+  ["ypos:", 0],
+  "",
+  ["bounceOffEdge"],
+  "",
+  ["setRotationStyle", "left-right"],
+  "",
+  ["xpos"],
+  ["ypos"],
+  ["heading"],
 
-var spec_shapes = {
-    'b': '<_>',
-    's': '[_]',
-    'n': '(_)',
-    'd': '(_ v)',
-    'm': '[_ v]',
-    'c': '[#ff0088]',
-};
+  ["say:duration:elapsed:from:", "Hello!", 2],
+  ["say:", "Hello!"],
+  ["think:duration:elapsed:from:", "Hmm...", 2],
+  ["think:", "Hmm..."],
+  "",
+  ["show"],
+  ["hide"],
+  "",
+  ["lookLike:", "costume1"],
+  ["nextCostume"],
+  "",
+  ["startScene", "backdrop1"],
+  ["startSceneAndWait", "backdrop1"],
+  ["nextScene"],
+  "",
+  ["changeGraphicEffect:by:", "color", 25],
+  ["setGraphicEffect:to:", "color", 0],
+  ["filterReset"],
+  "",
+  ["changeSizeBy:", 10],
+  ["setSizeTo:", 100],
+  "",
+  ["comeToFront"],
+  ["goBackByLayers:", 1],
+  "",
+  ["costumeIndex"],
+  ["scale"],
+  "",
+  ["sceneName"],
+  ["backgroundIndex"],
 
-var shape_ids = {
-    'r': '(_)',
-    'b': '<_>',
-};
+  ["playSound:", "pop"],
+  ["doPlaySoundAndWait", "pop"],
+  ["stopAllSounds"],
+  "",
+  ["playDrum", 1, 0.25],
+  ["rest:elapsed:from:", 0.25],
+  "",
+  ["noteOn:duration:elapsed:from:", 60, 0.5],
+  ["instrument:", 1],
+  "",
+  ["changeVolumeBy:", -10],
+  ["setVolumeTo:", 100],
+  ["volume"],
+  "",
+  ["changeTempoBy:", 20],
+  ["setTempoTo:", 60],
+  ["tempo"],
 
-var category_ids = {
-    1:  "motion",
-    2:  "looks",
-    3:  "sound",
-    4:  "pen",
-    5:  "events",
-    6:  "control",
-    7:  "sensing",
-    8:  "operators",
-    9:  "variables",
-    12: "list",
+  ["clearPenTrails"],
+  "",
+  ["stampCostume"],
+  "",
+  ["putPenDown"],
+  ["putPenUp"],
+  "",
+  ["penColor:"],
+  ["changePenHueBy:"],
+  ["setPenHueTo:", 0],
+  "",
+  ["changePenShadeBy:"],
+  ["setPenShadeTo:", 50],
+  "",
+  ["changePenSizeBy:", 1],
+  ["penSize:", 1],
 
-    102: "looks",
-    104: "pen",
-    106: "control",
-    107: "sensing",
-};
+  ["whenGreenFlag"],
+  ["whenKeyPressed", "space"],
+  ["whenClicked"],
+  ["whenSceneStarts", "backdrop1"],
+  "",
+  ["whenSensorGreaterThan", "loudness", 10],
+  "",
+  ["whenIReceive", ""],
+  ["broadcast:", ""],
+  ["doBroadcastAndWait", ""],
 
-// TODO translate palette names
+  ["wait:elapsed:from:", 1],
+  "",
+  ["doRepeat", 10],
+  ["doForever"],
+  "",
+  ["doIf"],
+  ["doIfElse", false, [], []],
+  ["doWaitUntil"],
+  ["doUntil"],
+  "",
+  ["stopScripts", "all"],
+  "",
+  ["whenCloned"],
+  ["createCloneOf"],
+  ["deleteClone"],
+
+  ["touching:", ""],
+  ["touchingColor:"],
+  ["color:sees:"],
+  ["distanceTo:", ""],
+  "",
+  ["doAsk", "What's your name?"],
+  ["answer"],
+  "",
+  ["keyPressed:", "space"],
+  ["mousePressed"],
+  ["mouseX"],
+  ["mouseY"],
+  "",
+  ["soundLevel"],
+  "",
+  ["senseVideoMotion", "motion", "Stage"],
+  ["setVideoState", "on"],
+  ["setVideoTransparency", 50],
+  "",
+  ["timer"],
+  ["timerReset"],
+  "",
+  ["getAttribute:of:", "x position", "Sprite1"],
+  "",
+  ["timeAndDate", "minute"],
+  ["timestamp"],
+  ["getUserName"],
+
+  ["+", "", ""],
+  ["-", "", ""],
+  ["*", "", ""],
+  ["/", "", ""],
+  ["-"],
+  ["randomFrom:to:", 1, 10],
+  ["-"],
+  ["<", "", ""],
+  ["=", "", ""],
+  [">", "", ""],
+  "",
+  ["&"],
+  ["|"],
+  ["not"],
+  "",
+  ["concatenate:with:", "hello ", "world"],
+  ["letter:of:", 1, "world"],
+  ["stringLength:", "world"],
+  "",
+  ["%", "", ""],
+  ["rounded", ""],
+  "",
+  ["computeFunction:of:", "sqrt", 9],
+
+  ["readVariable", "foo"],
+  "",
+  ["setVar:to:"],
+  ["changeVar:by:"],
+  "",
+  ["showVariable:"],
+  ["hideVariable:"],
+
+  ["contentsOfList:", "list"],
+  "",
+  ["append:toList:", "thing", "list"],
+  "",
+  ["deleteLine:ofList:", 1, "list"],
+  ["insert:at:ofList:", "thing", 1, "list"],
+  ["setLine:ofList:to:", 1, "list", "thing"],
+  "",
+  ["getLine:ofList:", 1, "list"],
+  ["lineCountOfList:", "list"],
+  ["list:contains:", "list", "thing"],
+  "",
+  ["showList:", "list"],
+  ["hideList:", "list"],
+
+];
+
+var foo = "";
+var el = document.createElement('div');
 
 var currentCategory = null;
 var currentSubMenu = null;
+
+blocks.forEach(function(array) {
+  if (array === "") {
+    foo += "\n";
+    return;
+  }
+
+  var block = scratchblocks.Block.fromJSON(language, array);
+
+  for (var i=0; i<block.children.length; i++) {
+    var child = block.children[i];
+    if (child.isInput && !child.isColor) {
+      block.children[i] = new scratchblocks.Input(child.shape, "...");
+      break;
+    } else if (child.isScript) {
+      debugger;
+      block.children[i] = scratchblocks.parse("...").scripts[0];
+      break;
+    }
+  }
+
+  var output = block.stringify();
+
+  var category = block.info.category;
+  if (currentCategory != category) {
+      foo += '\n// ' + category + '\n\n';
+      currentCategory = category;
+      currentSubMenu = {name: palette(category) + ' :: ' + category,
+                        dropMenu: []};
+      scratchblocksMenu.dropMenu.push(currentSubMenu);
+  }
+
+  foo += '\n' + output;
+
+  var display = output;
+  if (block.info.selector === 'computeFunction:of:') {
+    display = "([... v] of (9) :: operators)";
+  }
+  el.textContent = display;
+  currentSubMenu.dropMenu.push({
+    name: el.innerHTML,
+    replaceWith: output,
+    //openWith: output.slice(0, splitIndex),
+    //closeWith: output.slice(splitIndex + offset)
+  });
+  //foo += output.slice(0, splitIndex) + output.slice(splitIndex + offset) + '\n';
+});
+
 var doneBlockText = [];
 
-specs.forEach(function(spec) {
+[].forEach(function(spec) {
+  return;
+
     var text = spec[0],
         shape = shape_ids[spec[1]],
         category = category_ids[spec[2]],
@@ -72,11 +288,8 @@ specs.forEach(function(spec) {
     if (doneBlockText.indexOf(text) > -1) return;
     doneBlockText.push(text);
 
-    var blockid = text.replace(/%.(?:\.[A-z]+)?/g, '_')
-                      .replace('@greenFlag', '@green-flag')
-                      .replace('@turnLeft', '@arrow-cw')
-                      .replace('@turnRight', '@arrow-ccw');
-    var info = scratchblocks2.block_info_by_id[blockid];
+
+    var info = scratchblocks.blocksBySelector[text];
     if (info.flag && info.flag !== 'cstart') return;
 
     var args = [];
@@ -121,8 +334,7 @@ specs.forEach(function(spec) {
         foo += '\n// ' + category + '\n\n';
         currentCategory = category;
 
-        name = (language.palette[capitalise(category)] ||
-                language.palette[category]);
+        name = palette(category);
         currentSubMenu = {name: name + ' :: ' + category,
                           dropMenu: []};
         scratchblocksMenu.dropMenu.push(currentSubMenu);
@@ -189,7 +401,7 @@ specs.forEach(function(spec) {
 // TODO this whole thing stinks. Just rewrite scratchblocks to use proper block specs!
 
 scratchblocksMenu.dropMenu.push({
-    name: language.palette['More Blocks'] + ' :: custom',
+    name: palette('More Blocks') + ' :: custom',
     dropMenu: [
         {name: language.define, openWith: language.define + ' '},
         {name: '(input :: custom-arg)', openWith: '(', closeWith: ')'},
@@ -197,7 +409,7 @@ scratchblocksMenu.dropMenu.push({
 });
 
 scratchblocksMenu.dropMenu.push({
-    name: (language.palette.Tips || 'Help') + ' :: grey',
+    name: (palette('Tips') || 'Help') + ' :: grey',
     beforeInsert: function () {
         window.location = 'http://wiki.scratch.mit.edu/wiki/Block_Plugin/ForumHelp';
     },
