@@ -36,6 +36,7 @@
 
     <script type="text/javascript" src="{{ STATIC_URL }}/djangobb_forum/scratchblocks/scratchblocks.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}/djangobb_forum/scratchblocks/translations.js" charset="utf-8"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}/djangobb_forum/scratchblocks/backpack.js"></script>
     <script type="text/javascript">
     (function ($) {
         scratchblocks._currentLanguage = 'en';
@@ -98,9 +99,8 @@
         replace: function(el, svg, doc, options) {
           // add scratchblocks to `el`
           scratchblocks.replace(el, svg, doc, options);
-
-          // TODO backpack plugin
-          // el.appendChild(backpackLink)
+          // backpack plugin
+          el.appendChild(scratchblocks.backpackButton(el));
         },
       });
     });
