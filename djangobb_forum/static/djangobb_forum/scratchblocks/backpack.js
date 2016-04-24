@@ -79,13 +79,18 @@
 
   var backpackButton = function(parsed) {
     var node = document.createElement('button');
+    try {
     var scripts = parsed.toJSON(); // we pretend to trust this output
+    } catch (e) {
+      console.log('scratchblocks-to-backpack: '+e);
+      return;
+    }
     scripts = scripts.scripts.map(function(x) {return x[2];});
     node.addEventListener('click', function() {
       node.textContent = "Working...";
       addScriptToBackpack(
         window.prompt( // aha! a legitimate use for window.prompt!
-            "Title",
+            "Name this script:",
             'Exported from '+document.title.replace(' - Discuss Scratch', '')
         ),
         scripts,
