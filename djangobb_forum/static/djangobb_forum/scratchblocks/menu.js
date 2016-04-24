@@ -6,8 +6,6 @@
  *   - before any scratchblocks.parse() calls
  */
 
-// TODO upgrade to v3
-
 // TODO (function($){
 
 function capitalise(text) {
@@ -22,7 +20,7 @@ mySettings.markupSet.forEach(function(item) {
 var code = scratchblocks._currentLanguages.slice().pop();
 var language = scratchblocks.allLanguages[code];
 function palette(name) {
-  if (!language.palette) return name;
+  if (!language.palette) return capitalise(name);
   return language.palette[capitalise(name)] || language.palette[name];
 }
 
@@ -248,157 +246,51 @@ blocks.forEach(function(array) {
     }
   }
 
-  var output = block.stringify();
-
   var category = block.info.category;
   if (currentCategory != category) {
-      foo += '\n// ' + category + '\n\n';
-      currentCategory = category;
-      currentSubMenu = {name: palette(category) + ' :: ' + category,
-                        dropMenu: []};
-      scratchblocksMenu.dropMenu.push(currentSubMenu);
+    foo += '\n// ' + category + '\n\n';
+    currentCategory = category;
+    currentSubMenu = {name: palette(category) + ' :: ' + category,
+      dropMenu: []};
+    scratchblocksMenu.dropMenu.push(currentSubMenu);
   }
 
-  foo += '\n' + output;
+  var output = block.stringify();
+
+  var offset = 0;
+  var splitIndex = output.indexOf('...');
+  if (splitIndex !== -1) {
+    offset = 3;
+  } else {
+    splitIndex = output.indexOf('\n');
+    if (splitIndex !== -1) {
+      splitIndex++;
+    }
+  } 
+  console.log(output);
+  output = output.replace(/\n/g, "\n\n");
 
   var display = output;
   if (block.info.selector === 'computeFunction:of:') {
     display = "([... v] of (9) :: operators)";
   }
   el.textContent = display;
-  currentSubMenu.dropMenu.push({
-    name: el.innerHTML,
-    replaceWith: output,
-    //openWith: output.slice(0, splitIndex),
-    //closeWith: output.slice(splitIndex + offset)
-  });
-  //foo += output.slice(0, splitIndex) + output.slice(splitIndex + offset) + '\n';
-});
 
-var doneBlockText = [];
-
-[].forEach(function(spec) {
-  return;
-
-    var text = spec[0],
-        shape = shape_ids[spec[1]],
-        category = category_ids[spec[2]],
-        defaults = spec.slice(3);
-
-    if (doneBlockText.indexOf(text) > -1) return;
-    doneBlockText.push(text);
-
-
-    var info = scratchblocks.blocksBySelector[text];
-    if (info.flag && info.flag !== 'cstart') return;
-
-    var args = [];
-    var pat = /%(.)(?:\.[A-z]+)?/g;
-    var match;
-    while (match = pat.exec(text)) {
-        args.push(spec_shapes[match[1]]);
-        if (args.length > 1 && match[1] == 'c') {
-            args[0] = '[#00ff00]';
-            args[1] = '[#0000ff]';
-        }
-    }
-    defaults[0] = '...';
-    args = args.map(function(item) {
-        var fallback = (item[0] === '(') ? '0' : ' ';
-        return item.replace('_', defaults.shift() || fallback);
+  if (splitIndex === -1) {
+    currentSubMenu.dropMenu.push({
+      name: el.innerHTML,
+      replaceWith: output,
     });
-
-    var output = language.blocks[blockid] || blockid;
-    if (blockid.indexOf('@') > -1) {
-        for (otherid in language.aliases) {
-            if (language.aliases[otherid] === blockid) {
-                output = otherid;
-            }
-        }
-    }
-
-
-    var preview = '';
-    output = output.replace(/_/g, ' _ ').replace(/ +/g, ' ').trim();
-    if (blockid === '_ of _' || blockid === 'length of _') {
-        preview = ' :: ' + category;
-    } else if ((scratchblocks2.find_block(output, []) || {}).category !== category) {
-        output += ' :: ' + category;
-    }
-
-    while (args.length) {
-        output = output.replace('_', args.shift());
-    }
-
-    if (currentCategory != category) {
-        foo += '\n// ' + category + '\n\n';
-        currentCategory = category;
-
-        name = palette(category);
-        currentSubMenu = {name: name + ' :: ' + category,
-                          dropMenu: []};
-        scratchblocksMenu.dropMenu.push(currentSubMenu);
-
-        if (category === 'variables') {
-            currentSubMenu.dropMenu.push({
-                name:'(variable)',
-                openWith:'(',
-                // placeHolder: 'variable',
-                closeWith:')',
-            });
-        } else if (category === 'list') {
-            currentSubMenu.dropMenu.push({
-                name:'(list :: list)',
-                openWith:'(',
-                // placeHolder: 'list',
-                closeWith:' :: list)',
-            });
-        }
-    }
-
-    var preview = output.replace('<...>', '<>') + preview;
-
-    if (shape) {
-        output = shape.replace('_', output);
-        preview = shape.replace('_', preview);
-    }
-
-    if (info.flag === 'cstart') output += '\n    |\nend\n';
-    if (info.shape === 'hat') output = '\n' + output;
-
-    preview = preview.replace(/&/g, '&amp;')
-                     .replace(/</g, '&lt;')
-                     .replace(/>/g, '&gt;');
-
-    // Put the cursor at the first input if possible,
-    // otherwise the first C mouth,
-    // otherwise at the end.
-    var splitIndex = output.indexOf('...');
-    var offset = 3;
-    if (splitIndex === -1) {
-        splitIndex = output.indexOf('|');
-        offset = 1;
-    } else {
-        output = output.replace('|', '');
-    }
-    if (splitIndex > -1) {
-        currentSubMenu.dropMenu.push({
-            name: preview,
-            openWith: output.slice(0, splitIndex),
-            closeWith: output.slice(splitIndex + offset)
-        });
-        foo += output.slice(0, splitIndex) + output.slice(splitIndex + offset) + '\n';
-    } else {
-        currentSubMenu.dropMenu.push({
-            name: preview,
-            replaceWith: output,
-        });
-        foo += output + '\n';
-    }
-
+    foo += output + "\n";
+  } else {
+    currentSubMenu.dropMenu.push({
+      name: el.innerHTML,
+      openWith: output.slice(0, splitIndex),
+      closeWith: output.slice(splitIndex + offset)
+    });
+    foo += output.slice(0, splitIndex) + output.slice(splitIndex + offset) + '\n';
+  }
 });
-
-// TODO this whole thing stinks. Just rewrite scratchblocks to use proper block specs!
 
 scratchblocksMenu.dropMenu.push({
     name: palette('More Blocks') + ' :: custom',

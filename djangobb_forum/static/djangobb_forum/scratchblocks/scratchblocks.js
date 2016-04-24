@@ -102,7 +102,7 @@ var scratchblocks = function () {
   var inputPat = /(%[a-zA-Z](?:\.[a-zA-Z0-9]+)?)/;
   var inputPatGlobal = new RegExp(inputPat.source, 'g');
   var iconPat = /(@[a-zA-Z]+)/;
-  var splitPat = new RegExp([inputPat.source, '|', iconPat.source].join(''), 'g');
+  var splitPat = new RegExp([inputPat.source, '|', iconPat.source, '| +'].join(''), 'g');
 
   var hexColorPat = /^#(?:[0-9a-fA-F]{3}){1,2}?$/;
 
@@ -179,12 +179,15 @@ var scratchblocks = function () {
       }
     });
 
+    language.nativeAliases = {};
     Object.keys(language.aliases).forEach(function(alias) {
       var spec = language.aliases[alias];
       var block = blocksBySpec[spec];
 
       var aliasHash = hashSpec(alias);
       blocksByHash[aliasHash] = block;
+
+      language.nativeAliases[spec] = alias;
     });
 
     language.nativeDropdowns = {};
@@ -335,7 +338,7 @@ var scratchblocks = function () {
         words.push(child.value);
       } else if (child.isIcon) {
         words.push("@" + child.name);
-      } else {
+      } else if (!child.isScript) {
         words.push("_");
       }
     }
@@ -438,7 +441,7 @@ var scratchblocks = function () {
           }
         }
         if (tok === end) break;
-        if (tok === '/' && peek() === '/') break;
+        if (tok === '/' && peek() === '/' && !end) break;
 
         switch (tok) {
           case '[':
@@ -548,6 +551,17 @@ var scratchblocks = function () {
 
     function pReporter() {
       next(); // '('
+
+      // empty number-dropdown
+      if (tok === ' ') {
+        next();
+        if (tok === 'v' && peek() === ')') {
+          next();
+          next();
+          return new Input('number-dropdown', "");
+        }
+      }
+
       var children = pParts(')');
       if (tok && tok === ')') next();
 
@@ -1531,6 +1545,7 @@ var scratchblocks = function () {
   Label.prototype.isLabel = true;
 
   Label.prototype.stringify = function() {
+    if (this.value === "<" || this.value === ">") return this.value;
     return (this.value
       .replace(/([<>[\](){}])/g, "\\$1")
     );
@@ -1869,6 +1884,7 @@ var scratchblocks = function () {
         selector: 'procDef',
         call: spec,
         names: args[1],
+        language: lang,
       }, children);
 
     } else if (selector === 'call') {
@@ -1878,6 +1894,7 @@ var scratchblocks = function () {
         shape: 'stack',
         selector: 'call',
         call: spec,
+        language: lang,
       });
       var parts = info.parts;
 
@@ -1891,11 +1908,14 @@ var scratchblocks = function () {
           'contentsOfList:': 'list',
           'getParam': 'custom-arg',
         }[selector],
+        language: lang,
       }
       return new Block(info, [new Label(args[0])]);
 
     } else {
-      var info = blocksBySelector[selector];
+      var info = extend(blocksBySelector[selector], {
+        language: lang,
+      });
       assert(info, "unknown selector: " + selector);
       var spec = lang.commands[info.spec] || spec;
       var parts = spec ? parseSpec(spec).parts : info.parts;
@@ -1910,10 +1930,14 @@ var scratchblocks = function () {
         return new Label(part.trim());
       }
     });
-    args.forEach(function(list) {
+    args.forEach(function(list, index) {
       assert(isArray(list));
       children.push(new Script(list.map(Block.fromJSON.bind(null, lang))));
+      if (selector === 'doIfElse' && index === 0) {
+        children.push(new Label(lang.commands["else"]));
+      }
     });
+    // TODO loop arrows
     return new Block(info, children);
   };
 
@@ -1954,10 +1978,30 @@ var scratchblocks = function () {
   };
 
   Block.prototype.stringify = function() {
+    var firstInput = null;
+    var checkAlias = false;
     var text = this.children.map(function(child) {
+      if (child.isIcon) checkAlias = true;
+      if (child.isInput && !firstInput) firstInput = child;
+
       return child.isScript ? "\n" + indent(child.stringify()) + "\n"
                             : child.stringify().trim() + " ";
     }).join("").trim();
+
+    var lang = this.info.language;
+    if (checkAlias && lang) {
+      var type = blocksBySelector[this.info.selector];
+      var spec = type.spec;
+      var alias = lang.nativeAliases[type.spec]
+      if (alias) {
+        // TODO make translate() not in-place, and use that
+        if (inputPat.test(alias)) {
+          alias = alias.replace(inputPat, firstInput.stringify());
+        }
+        return alias;
+      }
+    }
+
     if ((this.info.shape === 'reporter' && this.info.category === 'list')
      || (this.info.category === 'custom' && this.info.shape === 'stack')) {
       text += " :: " + this.info.category;
