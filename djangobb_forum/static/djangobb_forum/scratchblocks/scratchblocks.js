@@ -2144,7 +2144,7 @@ var scratchblocks = function () {
     var Line = function(y) {
       this.y = y;
       this.width = 0;
-      this.height = 16;
+      this.height = y ? 13 : 16;
       this.children = [];
     };
 
@@ -2155,7 +2155,7 @@ var scratchblocks = function () {
       if (lines.length === 0) {
         line.height += pt + pb;
       } else {
-        line.height = isLast ? 13 : 15;
+        line.height += isLast ? 0 : +2;
         line.y -= 1;
       }
       y += line.height;
@@ -2195,6 +2195,8 @@ var scratchblocks = function () {
         child.height = Math.max(12, child.height) + 3;
         y += child.height;
         line = new Line(y);
+      } else if (child.isArrow) {
+        line.children.push(child);
       } else {
         var cmw = i > 0 ? 30 : 0; // 27
         var md = this.isCommand ? 0 : this.minDistance(child);
