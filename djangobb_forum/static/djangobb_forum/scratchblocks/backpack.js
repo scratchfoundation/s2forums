@@ -80,7 +80,7 @@
   var backpackButton = function(parsed) {
     var node = document.createElement('button');
     try {
-    var scripts = parsed.toJSON(); // we pretend to trust this output
+      var scripts = parsed.toJSON(); // we pretend to trust this output
     } catch (e) {
       console.log('scratchblocks-to-backpack: '+e);
       return;
