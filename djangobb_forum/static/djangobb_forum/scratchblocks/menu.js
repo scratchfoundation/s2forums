@@ -267,7 +267,6 @@ blocks.forEach(function(array) {
       splitIndex++;
     }
   } 
-  console.log(output);
   output = output.replace(/\n/g, "\n\n");
 
   var display = output;
