@@ -77,10 +77,10 @@
     );
   }
 
-  var backpackButton = function(parsed) {
+  var backpackButton = function(doc) {
     var node = document.createElement('button');
     try {
-      var scripts = parsed.toJSON(); // we pretend to trust this output
+      var scripts = doc.toJSON(); // we pretend to trust this output
     } catch (e) {
       console.log('scratchblocks-to-backpack: '+e);
       return;
