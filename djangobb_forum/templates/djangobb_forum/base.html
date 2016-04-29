@@ -99,9 +99,15 @@
         replace: function(el, svg, doc, options) {
           // add scratchblocks to `el`
           scratchblocks.replace(el, svg, doc, options);
+
           // backpack plugin
-          var btn = scratchblocks.backpackButton(doc);
-          if (btn) el.appendChild(btn);
+          if (doc.scripts.length >= 1 && doc.scripts[0].blocks.length >= 2) {
+            var btn = scratchblocks.backpackButton(doc);
+            if (btn) {
+              btn.style.float = 'right';
+              el.insertBefore(btn, el.children[0]);
+            }
+          }
         },
       });
     });
