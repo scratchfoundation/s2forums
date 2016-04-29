@@ -22,9 +22,9 @@
   function addObjectToBackpack(obj, yes, no) {
     // We're going to regex against the cookie because that's the One Best Way
     // To Do It(tm).
-    var CSRFTOKEN = document.cookie?
-            (document.cookie.match(/csrftoken=(.*?);/) ?
-             document.cookie.match(/csrftoken=(.*?);/)[1] :
+    var CSRFTOKEN = document.cookie ?
+            (document.cookie.match(/csrftoken=([^;]*)/) ?
+             document.cookie.match(/csrftoken=([^;]*)/)[1] :
              null) :
             null;
     var USER = window.Scratch && window.Scratch.INIT_DATA.LOGGED_IN_USER.model?
@@ -101,7 +101,6 @@
         },
         function(e) {
           node.textContent = "Error: "+e;
-          node.disabled = 'disabled';
         }
       );
     }, false);
