@@ -461,6 +461,7 @@ var scratchblocks = function () {
             children.push(pEmbedded());
             break;
           case ' ':
+          case '\t':
             next();
             if (label && isDefine(label.value)) {
               // define hat
@@ -1294,7 +1295,7 @@ var scratchblocks = function () {
         "Q", curve(0, 16, -1, 13, 0.6),
         "Z",
       ],
-      class: 'define-hat-cap',
+      class: 'sb-define-hat-cap',
     });
   }
 
@@ -1354,7 +1355,7 @@ var scratchblocks = function () {
   function commentRect(w, h, props) {
     var r = 6;
     return path(extend(props, {
-      class: 'comment',
+      class: 'sb-comment',
       path: [
         "M", r, 0,
         arc(w - r, 0, w, r, r, r),
@@ -1368,13 +1369,13 @@ var scratchblocks = function () {
 
   function commentLine(width, props) {
     return move(-width, 9, rect(width, 2, extend(props, {
-      class: 'comment-line',
+      class: 'sb-comment-line',
     })));
   }
 
   /* definitions */
 
-  var cssContent = "text{font-family:Lucida Grande,Verdana,Arial,DejaVu Sans,sans-serif;font-weight:700;fill:#fff;font-size:10px;word-spacing:+1px}.obsolete{fill:#d42828}.motion{fill:#4a6cd4}.looks{fill:#8a55d7}.sound{fill:#bb42c3}.pen{fill:#0e9a6c}.events{fill:#c88330}.control{fill:#e1a91a}.sensing{fill:#2ca5e2}.operators{fill:#5cb712}.variables{fill:#ee7d16}.list{fill:#cc5b22}.custom{fill:#632d99}.custom-arg{fill:#5947b1}.extension{fill:#4b4a60}.grey{fill:#969696}.bevel{filter:url(#bevelFilter)}.input{filter:url(#inputBevelFilter)}.input-number,.input-number-dropdown,.input-string{fill:#fff}.literal-dropdown,.literal-number,.literal-number-dropdown,.literal-string{font-weight:400;font-size:9px;word-spacing:0}.literal-number,.literal-number-dropdown,.literal-string{fill:#000}.darker{filter:url(#inputDarkFilter)}.outline{stroke:#fff;stroke-opacity:.2;stroke-width:2;fill:none}.define-hat-cap{stroke:#632d99;stroke-width:1;fill:#8e2ec2}.comment{fill:#ffffa5;stroke:#d0d1d2;stroke-width:1}.comment-line{fill:#ffff80}.comment-label{font-family:Helevetica,Arial,DejaVu Sans,sans-serif;font-weight:700;fill:#5c5d5f;word-spacing:0;font-size:12px}";
+  var cssContent = ".sb-label{font-family:Lucida Grande,Verdana,Arial,DejaVu Sans,sans-serif;font-weight:700;fill:#fff;font-size:10px;word-spacing:+1px}.sb-obsolete{fill:#d42828}.sb-motion{fill:#4a6cd4}.sb-looks{fill:#8a55d7}.sb-sound{fill:#bb42c3}.sb-pen{fill:#0e9a6c}.sb-events{fill:#c88330}.sb-control{fill:#e1a91a}.sb-sensing{fill:#2ca5e2}.sb-operators{fill:#5cb712}.sb-variables{fill:#ee7d16}.sb-list{fill:#cc5b22}.sb-custom{fill:#632d99}.sb-custom-arg{fill:#5947b1}.sb-extension{fill:#4b4a60}.sb-grey{fill:#969696}.sb-bevel{filter:url(#bevelFilter)}.sb-input{filter:url(#inputBevelFilter)}.sb-input-number,.sb-input-number-dropdown,.sb-input-string{fill:#fff}.sb-literal-dropdown,.sb-literal-number,.sb-literal-number-dropdown,.sb-literal-string{font-weight:400;font-size:9px;word-spacing:0}.sb-literal-number,.sb-literal-number-dropdown,.sb-literal-string{fill:#000}.sb-darker{filter:url(#inputDarkFilter)}.sb-outline{stroke:#fff;stroke-opacity:.2;stroke-width:2;fill:none}.sb-define-hat-cap{stroke:#632d99;stroke-width:1;fill:#8e2ec2}.sb-comment{fill:#ffffa5;stroke:#d0d1d2;stroke-width:1}.sb-comment-line{fill:#ffff80}.sb-comment-label{font-family:Helevetica,Arial,DejaVu Sans,sans-serif;font-weight:700;fill:#5c5d5f;word-spacing:0;font-size:12px}";
 
   function makeStyle() {
     var style = el('style');
@@ -1520,7 +1521,7 @@ var scratchblocks = function () {
   function darkRect(w, h, category, el) {
     return setProps(group([
       setProps(el, {
-        class: [category, 'darker'].join(' '),
+        class: ['sb-'+category, 'sb-darker'].join(' '),
       })
     ]), { width: w, height: h });
   }
@@ -1532,14 +1533,18 @@ var scratchblocks = function () {
     o.draw();
   }
 
+  var Metrics = function(width) {
+    this.width = width;
+  };
+
   /* Label */
 
   var Label = function(value, cls) {
     this.value = value;
     this.cls = cls || '';
     this.el = null;
-    this.width = null;
     this.height = 12;
+    this.metrics = null;
     this.x = 0;
   };
   Label.prototype.isLabel = true;
@@ -1551,63 +1556,77 @@ var scratchblocks = function () {
     );
   };
 
-  Label.prototype.measure = function() {
-    // TODO measure multiple spaces
-    this.el = text(0, 10, this.value, {
-      class: this.cls,
-    });
-    if (this.value === "") {
-      this.width = 0;
-    } else if (this.value === " ") {
-      this.width = 4.15625;
-    } else {
-      Label.measure(this);
-    }
-  };
-
   Label.prototype.draw = function() {
     return this.el;
   };
 
-  Label.measuring = null;
-  Label.toMeasure = [];
+  Object.defineProperty(Label.prototype, 'width', {
+    get: function() {
+      return this.metrics.width;
+    },
+  });
 
-  Label.startMeasuring = function() {
-    Label.measuring = setProps(newSVG(1, 1), {
+  Label.measuring = (function() {
+    var svg = setProps(newSVG(1, 1), {
       class: 'sb-measure',
     });
-    Label.measuring.style.visibility = 'hidden';
-    document.body.appendChild(Label.measuring);
+    svg.style.visibility = 'hidden';
+    svg.style.position = 'absolute';
+    svg.style.top = '-1px';
+    svg.style.left = '-1px';
+    svg.style.width = '1px';
+    svg.style.height = '1px';
+    svg.style.visibility = 'hidden';
+    svg.style.overflow = 'hidden';
+    svg.style.pointerEvents = 'none';
+    document.body.appendChild(svg);
+    return svg;
+  }());
 
-    var defs = el('defs');
-    Label.measuring.appendChild(defs);
-    defs.appendChild(makeStyle());
+  Label.metricsCache = {};
+  Label.toMeasure = [];
+
+  Label.prototype.measure = function() {
+    var value = this.value;
+    var cls = this.cls;
+    this.el = text(0, 10, value, {
+      class: 'sb-label ' + cls,
+    });
+
+    var cache = Label.metricsCache[cls];
+    if (!cache) {
+      cache = Label.metricsCache[cls] = Object.create(null);
+    }
+    if (Object.hasOwnProperty.call(cache, value)) {
+      this.metrics = cache[value];
+    } else {
+      this.metrics = cache[value] = Label.measure(this);
+    }
   };
+
   Label.measure = function(label) {
     Label.measuring.appendChild(label.el);
     Label.toMeasure.push(label);
+    return new Metrics();
   };
   Label.endMeasuring = function(cb) {
-    var measuring = Label.measuring;
     var toMeasure = Label.toMeasure;
-    Label.measuring = null;
     Label.toMeasure = [];
 
-    setTimeout(Label.measureAll.bind(null, measuring, toMeasure, cb), 0);
-    //Label.measureAll(measuring, toMeasure, cb);
+    setTimeout(Label.measureAll.bind(null, toMeasure, cb), 0);
   };
-  Label.measureAll = function(measuring, toMeasure, cb) {
+  Label.measureAll = function(toMeasure, cb) {
     for (var i=0; i<toMeasure.length; i++) {
       var label = toMeasure[i];
+      var metrics = label.metrics;
       var bbox = label.el.getBBox();
-      label.width = (bbox.width + 0.5) | 0;
+      metrics.width = (bbox.width + 0.5) | 0;
 
       var trailingSpaces = / *$/.exec(label.value)[0].length || 0;
       for (var j=0; j<trailingSpaces; j++) {
-        label.width += 4.15625;
+        metrics.width += 4.15625;
       }
     }
-    document.body.removeChild(measuring);
     cb();
   };
 
@@ -1661,7 +1680,7 @@ var scratchblocks = function () {
     this.isSquare = shape === 'string' || shape === 'color' || shape === 'dropdown';
 
     this.hasLabel = !(this.isColor || this.isInset);
-    this.label = this.hasLabel ? new Label(value, ['literal-' + this.shape]) : null;
+    this.label = this.hasLabel ? new Label(value, ['sb-literal-' + this.shape]) : null;
     this.x = 0;
   };
   Input.prototype.isInput = true;
@@ -1799,7 +1818,7 @@ var scratchblocks = function () {
 
     var result = group([
       setProps(el, {
-        class: ['input', 'input-'+this.shape].join(' '),
+        class: ['sb-input', 'sb-input-'+this.shape].join(' '),
       }),
     ]);
     if (this.hasLabel) {
@@ -2070,14 +2089,14 @@ var scratchblocks = function () {
     // mouths
     if (lines.length > 1) {
       return mouthRect(w, h, this.isFinal, lines, {
-        class: [this.info.category, 'bevel'].join(' '),
+        class: ['sb-' + this.info.category, 'sb-bevel'].join(' '),
       });
     }
 
     // outlines
     if (this.info.shape === 'outline') {
       return setProps(stackRect(w, h), {
-        class: 'outline',
+        class: 'sb-outline',
       });
     }
 
@@ -2088,7 +2107,7 @@ var scratchblocks = function () {
         var shape = child.isScript ? 'stack'
                   : child.isInput ? child.shape : child.info.shape;
         return ringRect(w, h, child.y, child.width, child.height, shape, {
-          class: [this.info.category, 'bevel'].join(' '),
+          class: ['sb-' + this.info.category, 'sb-bevel'].join(' '),
         });
       }
     }
@@ -2096,7 +2115,7 @@ var scratchblocks = function () {
     var func = Block.shapes[this.info.shape];
     assert(func, "no shape func: " + this.info.shape);
     return func(w, h, {
-      class: [this.info.category, 'bevel'].join(' '),
+      class: ['sb-' + this.info.category, 'sb-bevel'].join(' '),
     });
   };
 
@@ -2278,7 +2297,7 @@ var scratchblocks = function () {
   /* Comment */
 
   var Comment = function(value, hasBlock) {
-    this.label = new Label(value, ['comment-label']);
+    this.label = new Label(value, ['sb-comment-label']);
     this.width = null;
     this.hasBlock = hasBlock;
   };
@@ -2301,7 +2320,7 @@ var scratchblocks = function () {
     return group([
       commentLine(this.hasBlock ? Comment.lineLength : 0, 6),
       commentRect(this.width, this.height, {
-        class: 'comment',
+        class: 'sb-comment',
       }),
       move(8, 4, labelEl),
     ]);
@@ -2432,7 +2451,6 @@ var scratchblocks = function () {
 
   Document.prototype.render = function(cb) {
     // measure strings
-    Label.startMeasuring();
     this.measure();
 
     // finish measuring & render
@@ -2458,7 +2476,6 @@ var scratchblocks = function () {
     // return SVG
     var svg = newSVG(width, height);
     svg.appendChild(withChildren(el('defs'), [
-        makeStyle(),
         bevelFilter('bevelFilter', false),
         bevelFilter('inputBevelFilter', true),
         darkFilter('inputDarkFilter'),
@@ -2471,8 +2488,12 @@ var scratchblocks = function () {
 
   Document.prototype.exportSVG = function() {
     assert(this.el, "call draw() first");
-    // TODO pad exported SVGs?
+
+    var style = makeStyle();
+    this.el.appendChild(style);
     var xml = new XMLSerializer().serializeToString(this.el);
+    this.el.removeChild(style);
+
     return 'data:image/svg+xml;utf8,' + xml.replace(
       /[#]/g, encodeURIComponent
     );
@@ -2577,6 +2598,8 @@ var scratchblocks = function () {
     });
   };
 
+  // add our CSS to the page 
+  document.head.appendChild(makeStyle());
 
 
   return {
