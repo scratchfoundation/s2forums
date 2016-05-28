@@ -5,8 +5,8 @@ from django.contrib.auth import admin as auth_admin
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
-from djangobb_forum.models import Category, Forum, Topic, Post, Profile, Reputation, \
-    Report, Ban, Attachment, Poll, PollChoice, PostTracking
+from djangobb_forum.models import Category, Forum, Topic, Post, \
+    Report, Attachment
 
 
 class BaseModelAdmin(admin.ModelAdmin):
@@ -94,11 +94,5 @@ admin.site.register(Category, CategoryAdmin)
 admin.site.register(Forum, ForumAdmin)
 admin.site.register(Topic, TopicAdmin)
 admin.site.register(Post, PostAdmin)
-admin.site.register(Profile, ProfileAdmin)
-admin.site.register(PostTracking, PostTrackingAdmin)
-admin.site.register(Reputation, ReputationAdmin)
 admin.site.register(Report, ReportAdmin)
-admin.site.register(Ban, BanAdmin)
-admin.site.register(Attachment, AttachmentAdmin)
-admin.site.register(Poll, PollAdmin)
 
