@@ -742,8 +742,8 @@ def edit_post(request, post_id):
     form = build_form(EditPostForm, request, topic=topic, instance=post)
     if form.is_valid():
         post = form.save(commit=False)
-        if not form.cleaned_data['silent_edit']:
-            post.updated_by = request.user
+        if post.user == request.user
+            post.updated_by = post.user
             post.updated = timezone.now()
         post.save()
         messages.success(request, _("Post updated."))
