@@ -482,7 +482,11 @@ var scratchblocks = function () {
               name += tok;
               next();
             }
-            children.push(Icon.icons.hasOwnProperty(name) ? new Icon(name) : new Label("@" + name));
+            if (name === 'cloud') {
+              children.push(new Label("☁"));
+            } else {
+              children.push(Icon.icons.hasOwnProperty(name) ? new Icon(name) : new Label("@" + name));
+            }
             label = null;
             break;
           case '\\':
@@ -1762,7 +1766,7 @@ var scratchblocks = function () {
     return this.isRound ? "(" + text + ")"
          : this.isSquare ? "[" + text + "]"
          : this.isBoolean ? "<>"
-         : this.isStacK ? "{}"
+         : this.isStack ? "{}"
          : text;
   };
 
@@ -1770,7 +1774,7 @@ var scratchblocks = function () {
     if (this.hasArrow) {
       var value = this.menu || this.value;
       this.value = lang.dropdowns[value] || value;
-      this.label = new Label(this.value, ['literal-' + this.shape]);
+      this.label = new Label(this.value, ['sb-literal-' + this.shape]);
     }
   };
 
@@ -1950,6 +1954,7 @@ var scratchblocks = function () {
       }
     });
     args.forEach(function(list, index) {
+      list = list || [];
       assert(isArray(list));
       children.push(new Script(list.map(Block.fromJSON.bind(null, lang))));
       if (selector === 'doIfElse' && index === 0) {
@@ -2001,8 +2006,7 @@ var scratchblocks = function () {
     var checkAlias = false;
     var text = this.children.map(function(child) {
       if (child.isIcon) checkAlias = true;
-      if (child.isInput && !firstInput) firstInput = child;
-
+      if (!firstInput && !(child.isLabel || child.isIcon)) firstInput = child;
       return child.isScript ? "\n" + indent(child.stringify()) + "\n"
                             : child.stringify().trim() + " ";
     }).join("").trim();
@@ -2014,7 +2018,7 @@ var scratchblocks = function () {
       var alias = lang.nativeAliases[type.spec]
       if (alias) {
         // TODO make translate() not in-place, and use that
-        if (inputPat.test(alias)) {
+        if (inputPat.test(alias) && firstInput) {
           alias = alias.replace(inputPat, firstInput.stringify());
         }
         return alias;
