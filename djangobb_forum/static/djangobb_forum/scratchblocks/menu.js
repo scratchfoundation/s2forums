@@ -196,6 +196,7 @@ var blocks = [
   ["computeFunction:of:", "sqrt", 9],
 
   ["readVariable", "foo"],
+  ["readVariable", "☁ score"],
   "",
   ["setVar:to:"],
   ["changeVar:by:"],
