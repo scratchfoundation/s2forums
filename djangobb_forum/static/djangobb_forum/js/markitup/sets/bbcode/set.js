@@ -9,13 +9,15 @@
 // ----------------------------------------------------------------------------
 // Feel free to add more tags
 // ----------------------------------------------------------------------------
-var _simple_http_agent = $('#simple-user-agent').text()
+var _simple_http_agent = $('#simple-user-agent').text(),
+    _thumb_width = []; //[0] for Projects and [1] for Profiles
 if (swfobject.hasFlashPlayerVersion('1')) {
     var version = swfobject.getFlashPlayerVersion();
     _simple_http_agent += ', Flash '+ version.major +'.'+ version.minor +' (release '+ version.release +')';
 } else {
     _simple_http_agent += ', No Flash version detected'
 }
+
 mySettings = {
 	previewParserPath:	POST_PREVIEW_URL, // path to your BBCode parser
 	markupSet: [
@@ -25,6 +27,14 @@ mySettings = {
 		{name:'Stroke', key:'S', openWith:'[s]', closeWith:'[/s]' },
 		{separator:'---------------' },
 		{name:'Picture', key:'P', replaceWith:'[img][![Url]!][/img]'},
+		{name:'Thumbnail', dropMenu:[
+			{name:'Project Thumbnail', beforeInsert: function() {
+				_thumb_width[0] = prompt('Width (px)', 144);
+			}, replaceWith:'[img]http://cdn2.scratch.mit.edu/get_image/project/[![Project ID]!]_' + _thumb_width[0] + 'x' + Math.ceil(Number(_thumb_width[0]) * .75) + '.png[/img]'},
+			{name:'Profile Picture', beforeInsert: function(h) {
+				_thumb_width[1] = prompt('Size (px)', 90);
+			}, replaceWith:'[img]http://cdn2.scratch.mit.edu/get_image/user/[![Scratcher ID]!]_' + _thumb_width[1] + 'x' + _thumb_width[1] + '.png[/img]'} //Using Usernames would be MUCH better for this
+		], className:'thumbnail-button'},
 		{name:'Link', key:'L', openWith:'[url=[![Url]!]]', closeWith:'[/url]', placeHolder:'Your text to link here...'},
 		{separator:'---------------' },
 		{name:'Size', key:'S', openWith:'', closeWith:'',

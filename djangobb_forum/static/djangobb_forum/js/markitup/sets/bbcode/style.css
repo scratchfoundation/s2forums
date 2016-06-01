@@ -19,6 +19,9 @@
 .markItUp .markItUpButton5 a	{
 	background-image:url(images/picture.png);
 }
+.markItUp .thumbnail-button a {
+    background-image: url(../../../../img/thumbnail-button.png);
+}
 .markItUp .markItUpButton6 a	{
 	background-image:url(images/link.png);
 }
