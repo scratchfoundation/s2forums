@@ -21,7 +21,7 @@ DJANGOBB_POST_FLOOD = True
 DJANGOBB_POST_FLOOD_SLOW = 120
 DJANGOBB_POST_FLOOD_MED = 60
 DJANGOBB_TOPIC_CLOSE_DELAY = 24 * 60 * 60
-DJANGOBB_POST_DELETE_DELAY = 24 * 60 * 60
+DJANGOBB_POST_DELETE_DELAY = 99999999999999
 
 # Spam settings
 DJANGOBB_SPAM_CATEGORY_NAME = "Moderator Only Forums"
@@ -34,7 +34,7 @@ DJANGOBB_SIGNATURE_MAX_LINES = 10
 DJANGOBB_SIGNATURE_MAX_LENGTH = 2000
 DJANGOBB_AUTHORITY_SUPPORT = False
 DJANGOBB_DEFAULT_TIME_ZONE = 0
-DJANGOBB_IMAGE_HOST_WHITELIST = r'(?:(?:tinypic|photobucket|cubeupload)\.com|imageshack\.(?:com|us)|modshare\.tk|(?:scratchr|wikipedia|wikimedia|modshare\.futuresight)\.org|(?<!scratch\.mit)\.edu|scratch-dach\.info)$'
+DJANGOBB_IMAGE_HOST_WHITELIST = r'(?:(?:tinypic|photobucket|cubeupload)\.com|imageshack\.(?:com|us)|(?:wikipedia|wikimedia|modshare\.futuresight)\.org|(?<!scratch\.mit)\.edu|scratch-dach\.info)$'
 
 # Allowed paths for embedded images hosted on *.scratch.mit.edu
 DJANGOBB_SCRATCH_IMAGE_PATH_WHITELIST = r'^(?:/scratchr2/static|/static/site/|/get_image/|/w/images/)'
