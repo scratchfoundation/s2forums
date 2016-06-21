@@ -55,7 +55,7 @@ mySettings = {
         {separator:'---------------' },
 	{name:'Paste browser / operating system versions', openWith: _simple_http_agent, replaceWith: '', closeWith:'', className:'browser-os-button'},
 	{separator:'---------------' },
-    {name:'Scratchblocks', openWith:'', closeWith:'', className:'scratchblocks-button', dropMenu:[]}, // Generated in scratchblocks2/markitup.js
+    {name:'Scratchblocks', openWith:'', closeWith:'', className:'scratchblocks-button', dropMenu:[]}, // Generated in scratchblocks/markitup.js
     {separator:'---------------' },
 		{name:'Clean', className:"clean", replaceWith:function(markitup) { return markitup.selection.replace(/\[(.*?)\]/g, "") } },
 		{name:'Preview', className:"preview", call:'preview' }

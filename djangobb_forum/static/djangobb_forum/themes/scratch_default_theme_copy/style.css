@@ -30,6 +30,7 @@
 .djangobb pre.blocks {
     font: bold 10px/1 "Lucida Grande", Verdana, Arial, "DejaVu Sans", sans-serif;
     margin: 0 0 3px;
+    position: relative;
 }
 
 .djangobb h3 {
