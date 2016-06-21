@@ -104,8 +104,10 @@
           if (doc.scripts.length >= 1 && doc.scripts[0].blocks.length >= 2) {
             var btn = scratchblocks.backpackButton(doc);
             if (btn) {
-              btn.style.float = 'right';
-              el.insertBefore(btn, el.children[0]);
+              btn.style.position = 'absolute';
+              btn.style.top = '0';
+              btn.style.right = '0';
+              el.appendChild(btn);
             }
           }
         },
