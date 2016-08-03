@@ -962,8 +962,7 @@ def delete_post(request, post_id):
     is_head = topic.posts.order_by('created')[0].id == post.id
 
     if not (request.user.is_superuser or\
-        request.user in post.topic.forum.moderators.all() or \
-        (post.user == request.user and post == last_post)):
+        request.user in post.topic.forum.moderators.all()
         messages.success(request, _("You don't have permission to delete this post."))
         return HttpResponseRedirect(post.get_absolute_url())
     delete_kwargs = {'staff':request.user.is_superuser}
