@@ -67,8 +67,10 @@ specs.forEach(function(spec) {
         category = category_ids[spec[2]],
         defaults = spec.slice(3);
 
-    if (doneBlockText.indexOf(text) > -1) return;
-    doneBlockText.push(text);
+    if (spec[1] !== 'e') {
+        if (doneBlockText.indexOf(text) > -1) return;
+        doneBlockText.push(text);
+    }
 
     var blockid = text.replace(/%.(?:\.[A-z]+)?/g, '_')
                       .replace('@greenFlag', '@green-flag')
@@ -151,6 +153,11 @@ specs.forEach(function(spec) {
 
     if (info.flag === 'cstart') output += '\n    |\nend\n';
     if (info.shape === 'hat') output = '\n' + output;
+
+    if (spec[1] === 'e') {
+      output = output.replace('end', language.blocks['else'] + '\n    \nend');
+      preview += '\n' + language.blocks['else'];
+    }
 
     preview = preview.replace(/&/g, '&amp;')
                      .replace(/</g, '&lt;')
