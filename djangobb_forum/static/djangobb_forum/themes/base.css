@@ -56,9 +56,11 @@ p, li {
 .box,
 .blockpost .box,
 .postleft,
-.postsignature,
 .postmsg {
 	overflow: hidden;
+}
+.postsignature {
+    overflow: auto;
 }
 #reply {
 	overflow: visible;
