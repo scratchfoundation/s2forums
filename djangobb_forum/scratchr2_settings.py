@@ -34,7 +34,7 @@ DJANGOBB_SIGNATURE_MAX_LINES = 10
 DJANGOBB_SIGNATURE_MAX_LENGTH = 2000
 DJANGOBB_AUTHORITY_SUPPORT = False
 DJANGOBB_DEFAULT_TIME_ZONE = 0
-DJANGOBB_IMAGE_HOST_WHITELIST = r'(?:(?:tinypic|photobucket|cubeupload)\.com|imageshack\.(?:com|us)|modshare\.tk|(?:scratchr|wikipedia|wikimedia|modshare\.futuresight)\.org|(?<!scratch\.mit)\.edu|scratch-dach\.info)$'
+DJANGOBB_IMAGE_HOST_WHITELIST = r'(?:(?:tinypic|photobucket|cubeupload|imgbb)\.com|imageshack\.(?:com|us)|modshare\.tk|(?:scratchr|wikipedia|wikimedia|modshare\.futuresight)\.org|(?<!scratch\.mit)\.edu|scratch-dach\.info)$'
 
 # Allowed paths for embedded images hosted on *.scratch.mit.edu
 DJANGOBB_SCRATCH_IMAGE_PATH_WHITELIST = r'^(?:/scratchr2/static|/static/site/|/get_image/|/w/images/)'
