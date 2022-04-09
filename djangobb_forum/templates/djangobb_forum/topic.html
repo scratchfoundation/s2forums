@@ -17,6 +17,14 @@
             <p class="error" style="display: none;">{% trans "There was an error :( Try again?" %}</p>
             <a {% if subscribed %}style="display: none;"{% endif %} class="follow-button button blue" href="{% url djangobb:forum_add_subscription topic.id %}" title="{% trans "Follow this discussion to get a message when there's a new post" %}">{% trans 'Follow Discussion' %}</a>
             <a {% if not subscribed %}style="display: none;"{% endif %} class="unfollow-button button grey" href="{% url djangobb:forum_delete_subscription topic.id %}" title="{% trans 'Stop getting messages about new posts to this discussion' %}">{% trans 'Unfollow Discussion' %}</a>
+	     {% if topic.closed %}
+       	    {% if moderator %}
+                <dd><a href="{% url djangobb:open_close_topic topic.id 'o' %}">{% trans "Open topic" %}</a></dd>
+            {% endif %}
+        {% else %}
+            <dd><a href="{% url djangobb:open_close_topic topic.id 'c' %}">{% trans "Close topic" %}</a></dd>
+        {% endif %}
+    {% endif %}
         </div>
     {% endif %}
 
@@ -246,15 +254,6 @@
         {% else %}
             <dd><a class="moderator-only" href="{% url djangobb:stick_unstick_topic topic.id 's' %}">{% trans "Stick topic" %}</a></dd></dl>
         {% endif %}
-    {% elif can_close %}
-        {% if topic.closed %}
-       	    {% if moderator %}
-                <dd><a href="{% url djangobb:open_close_topic topic.id 'o' %}">{% trans "Open topic" %}</a></dd>
-            {% endif %}
-        {% else %}
-            <dd><a href="{% url djangobb:open_close_topic topic.id 'c' %}">{% trans "Close topic" %}</a></dd>
-        {% endif %}
-    {% endif %}
     </dl>
 </div>
 {% endblock %}
