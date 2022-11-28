@@ -13,7 +13,7 @@
                     <h4>{{ video_title }}</h4>
                 </div>
                 <div class="box-content">
-                    <iframe class="youtube-player" type="text/html" width="538" height="324" src="http://www.youtube.com/embed/{{ video_id }}?fs=1&amp;rel=0&amp;autoplay=1&amp;showinfo=0" frameborder="0"></iframe>
+                    <iframe class="youtube-player" type="text/html" width="538" height="324" src="http://www.youtube-nocookie.com/embed/{{ video_id }}?fs=1&amp;rel=0&amp;autoplay=1&amp;showinfo=0" frameborder="0" sandbox="allow-scripts allow-presentation allow-popups allow-same-origin" allowfullscreen></iframe>
                 </div>
             </div>
         {% else %}
